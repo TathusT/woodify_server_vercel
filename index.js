@@ -37,7 +37,7 @@ app.post("/login", async (req, res) => {
   res.json(profile);
 });
 
-app.post("/test", async (req, res) => {
+app.get("/test", async (req, res) => {
     res.json("profile");
   });
 

@@ -37,21 +37,8 @@ app.post("/login", async (req, res) => {
   res.json(profile);
 });
 
-app.post("/logout", async (req, res) => {
-    let profile = req.body.lineProfile;
-    let uid = profile.userId;
-    let urlRequest = `https://api.line.me/v2/bot/user/${uid}/richmenu/richmenu-cfb50427a3796fbb429957ec8bda2686`;
-    console.log(urlRequest);
-    await axios.request({
-      method: "POST",
-      url: `${urlRequest}`,
-      headers: {
-        Authorization: `Bearer ` + lineConfig.channelAccessToken,
-      },
-    }).catch((error) =>{
-        console.error("Error calling LINE API:", error.response.data);
-    });
-    res.json(profile);
+app.post("/test", async (req, res) => {
+    res.json("profile");
   });
 
 app.listen(4000, function () {

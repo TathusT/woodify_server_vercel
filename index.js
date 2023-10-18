@@ -22,6 +22,15 @@ const lineConfig = {
   channelSecret: "0b89248e5ea046b327297535b7ec3af1",
 };
 
+app.post("/webhook", line.middleware(lineConfig), async (req, res) => {
+  try {
+    const events = req.body.events;
+    console.log('event => ', events);
+  } catch (err) {
+    res.status(500).end();
+  }
+});
+
 app.post("/login", async (req, res) => {
   let profile = req.body.lineProfile;
   let uid = profile.userId;

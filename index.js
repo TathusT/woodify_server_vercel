@@ -23,13 +23,11 @@ const lineConfig = {
 
 const client = new line.Client(lineConfig);
 
-app.post("/webhook", line.middleware(lineConfig), async (req, res) => {
+app.post("/webhook", async (req, res) => {
   try {
     const events = req.body.events;
     console.log('event => ', events);
-    return events.length > 0
-      ? await events.map((item) => handleEvent(item))
-      : res.status(200).send("OK");
+    res.status(200).send("OK");
   } catch (err) {
     res.status(500).end();
   }

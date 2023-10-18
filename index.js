@@ -4,32 +4,46 @@ const axios = require("axios").default;
 const bodyParser = require("body-parser");
 var cors = require("cors");
 
-var corsOption = {
-  origin: true,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
+// var corsOption = {
+//   origin: true,
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true,
+//   optionsSuccessStatus: 200,
+// };
 
 const app = express();
-app.use(cors(corsOption));
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const lineConfig = {
-  channelAccessToken:
-    "lgOJd3BzZij3BujNXREFQZ9VrHYRnQoaBa0irWnzhNnkJTYXW5yDYomDYsbVqDZIFZ1HwnwcVsuxCFqbf/Fd7UxjZ0aHchxWGAx8/cbcDF5q82f+k5gqM3ocQSQd00aa+/IEo/kV7NLIm+QZX6VXbwdB04t89/1O/w1cDnyilFU=",
+  channelAccessToken: "lgOJd3BzZij3BujNXREFQZ9VrHYRnQoaBa0irWnzhNnkJTYXW5yDYomDYsbVqDZIFZ1HwnwcVsuxCFqbf/Fd7UxjZ0aHchxWGAx8/cbcDF5q82f+k5gqM3ocQSQd00aa+/IEo/kV7NLIm+QZX6VXbwdB04t89/1O/w1cDnyilFU=",
   channelSecret: "0b89248e5ea046b327297535b7ec3af1",
 };
+
+const client = new line.Client(lineConfig);
 
 app.post("/webhook", line.middleware(lineConfig), async (req, res) => {
   try {
     const events = req.body.events;
     console.log('event => ', events);
+    return events.length > 0
+      ? await events.map((item) => handleEvent(item))
+      : res.status(200).send("OK");
   } catch (err) {
     res.status(500).end();
   }
 });
+
+const handleEvent = async (event) => {
+  try {
+    const uid = event.source.userId
+    const message = event.message.text
+    console.log(message, uid);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 app.post("/login", async (req, res) => {
   let profile = req.body.lineProfile;

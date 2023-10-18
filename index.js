@@ -25,7 +25,7 @@ const lineConfig = {
 app.post("/login", async (req, res) => {
   let profile = req.body.lineProfile;
   let uid = profile.userId;
-  let urlRequest = `https://api.line.me/v2/bot/user/${uid}/richmenu/richmenu-98f1fe4a7582d6b936008ccf6c123040`;
+  let urlRequest = `https://api.line.me/v2/bot/user/${uid}/richmenu/richmenu-e3a4dacebb2e510ebabac2775e3be330`;
   console.log(urlRequest);
   await axios.request({
     method: "POST",

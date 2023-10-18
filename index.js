@@ -27,7 +27,7 @@ app.post("/webhook", async (req, res) => {
   try {
     const events = req.body.events;
     console.log(events);
-    lineEvent(events)
+    lineEvent(events[0])
     res.status(200).send("OK");
   } catch (err) {
     res.status(500).end();
@@ -40,7 +40,7 @@ const lineEvent = async (event) => {
     const message = event.message.text
     console.log(message, uid);
     if(message == 'ตรวจสอบพันธ์ุไม้'){
-      return client.replyMessage(event.replyToken, { type: "text", text: "เปลี่ยน rich menu เรียบร้อยแล้ว" });
+      return client.replyMessage(event.replyToken, { type: "text", text: "กรุณาอัปโหลดรูปหรือถ่ายภาพเพื่อใช้ในการตรวจสอบ" });
     }
   } catch (error) {
     console.error(error);

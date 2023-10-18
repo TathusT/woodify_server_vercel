@@ -26,7 +26,6 @@ const client = new line.Client(lineConfig);
 app.post("/webhook", async (req, res) => {
   try {
     const events = req.body.events;
-    console.log(events);
     lineEvent(events[0])
     res.status(200).send("OK");
   } catch (err) {
@@ -38,8 +37,8 @@ const lineEvent = async (event) => {
   try {
     const uid = event.source.userId
     const message = event.message.text
-    console.log(message, uid);
     if(message == 'ตรวจสอบพันธ์ุไม้'){
+      console.log(1);
       return client.replyMessage(event.replyToken, { type: "text", text: "กรุณาอัปโหลดรูปหรือถ่ายภาพเพื่อใช้ในการตรวจสอบ" });
     }
   } catch (error) {

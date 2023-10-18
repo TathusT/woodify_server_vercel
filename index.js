@@ -26,6 +26,7 @@ const client = new line.Client(lineConfig);
 app.post("/webhook", async (req, res) => {
   try {
     const events = req.body.events;
+    console.log(events);
     lineEvent(events)
     res.status(200).send("OK");
   } catch (err) {

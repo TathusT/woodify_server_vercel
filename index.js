@@ -26,18 +26,21 @@ const client = new line.Client(lineConfig);
 app.post("/webhook", async (req, res) => {
   try {
     const events = req.body.events;
-    console.log('event => ', events);
+    lineEvent
     res.status(200).send("OK");
   } catch (err) {
     res.status(500).end();
   }
 });
 
-const handleEvent = async (event) => {
+const lineEvent = async (event) => {
   try {
     const uid = event.source.userId
     const message = event.message.text
     console.log(message, uid);
+    if(message == 'ตรวจสอบพันธ์ุไม้'){
+      return client.replyMessage(event.replyToken, { type: "text", text: "เปลี่ยน rich menu เรียบร้อยแล้ว" });
+    }
   } catch (error) {
     console.error(error);
   }

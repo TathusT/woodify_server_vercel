@@ -245,6 +245,7 @@ const lineEvent = async (event) => {
   try {
     const uid = event.source.userId;
     const message = event.message.text;
+    console.log(message);
     const image = event.message.type == "image";
     let urlRequest;
     console.log(event);

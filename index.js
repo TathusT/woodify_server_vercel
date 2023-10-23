@@ -244,7 +244,7 @@ app.post("/webhook", async (req, res) => {
 const lineEvent = async (event) => {
   try {
     const uid = event.source.userId;
-    const message = event.message.text;
+    let message = event.message.text;
     console.log(message);
     const image = event.message.type == "image";
     let urlRequest;

@@ -1,6 +1,6 @@
 import express from 'express';
 import { Router } from 'express';
-import { prisma } from '../global/prisma';
+import { prisma } from '../../global/prisma';
 
 require('dotenv').config();
 const router: Router = express.Router();

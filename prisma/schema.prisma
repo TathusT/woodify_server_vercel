@@ -11,16 +11,18 @@ datasource db {
 }
 
 model Users{
-  u_id Int @id @default(autoincrement())
-  line_id String @unique
-  firstname String
-  lastname String
-  email String @unique
-  phone String @unique
-  image String
-  role roleEnum
-  create_at DateTime
-  update_at DateTime
+  u_id String @id @default(uuid())
+  line_id String? @unique
+  firstname String?
+  lastname String?
+  username String? @unique
+  password String?
+  email String? @unique
+  phone String? @unique
+  image String?
+  role roleEnum @default(USER)
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
   wood_info Wood_info[]
   updated_wood_info Wood_info[] @relation("updater")
   created_manuals Manual[] @relation("created_manuals")
@@ -36,7 +38,7 @@ enum roleEnum {
 }
 
 model Wood_info {
-  w_id                     Int          @id @default(autoincrement())
+  w_id                     String @id @default(uuid())
   common_name              String[]
   eng_name                 String[]
   botanical_name           String
@@ -46,47 +48,47 @@ model Wood_info {
   anatomical_characteristics String
   other                    String
   status                   Boolean
-  create_at                DateTime
-  update_at                DateTime
-  create_by               Int
-  update_by               Int
-  wood_image              Wood_Image[]
-  user                    Users       @relation(fields: [create_by], references: [u_id])
-  updater                 Users       @relation("updater", fields: [update_by], references: [u_id])
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+  create_by String
+  update_by String
+  wood_image Wood_Image[]
+  user Users @relation(fields: [create_by], references: [u_id])
+  updater Users @relation("updater", fields: [update_by], references: [u_id])
 }
 
 model Wood_Image{
-  wi_id Int @id @default(autoincrement())
-  w_id Int
+  wi_id String @id @default(uuid())
+  w_id String
   path String
   wood_info Wood_info @relation(fields: [w_id], references: [w_id])
 }
 
 model Manual{
-  m_id Int @id @default(autoincrement())
+  m_id String @id @default(uuid())
   topic String
   description String
   status Boolean
   image String
-  create_at DateTime
-  update_at DateTime
-  create_by Int
-  update_by Int
-  creator            Users    @relation("created_manuals", fields: [create_by], references: [u_id])
-  updater            Users    @relation("updated_manuals", fields: [update_by], references: [u_id])
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+  create_by String
+  update_by String
+  creator Users @relation("created_manuals", fields: [create_by], references: [u_id])
+  updater Users @relation("updated_manuals", fields: [update_by], references: [u_id])
 }
 
 model Classify{
-  c_id Int @id @default(autoincrement())
+  c_id String @id @default(uuid())
   status Boolean
   status_verify StatusVerifyEnum
   select_result String
   result Json
-  create_at DateTime
-  create_by Int
-  verify_by Int
-  creator            Users    @relation("created_classify", fields: [create_by], references: [u_id])
-  verifitor            Users    @relation("verify_classify", fields: [verify_by], references: [u_id])
+  create_at DateTime @default(now())
+  create_by String
+  verify_by String
+  creator Users @relation("created_classify", fields: [create_by], references: [u_id])
+  verifitor  Users @relation("verify_classify", fields: [verify_by], references: [u_id])
   notes Note[]
 }
 
@@ -97,12 +99,12 @@ enum StatusVerifyEnum {
 }
 
 model Note{
-  n_id Int @id @default(autoincrement())
-  c_id Int
+  n_id String @id @default(uuid())
+  c_id String
   change_result Boolean
   read_status Boolean
   description String
-  create_at DateTime
+  create_at DateTime @default(now())
   create_by Int
   classify Classify @relation(fields: [c_id], references: [c_id])
 }

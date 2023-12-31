@@ -13,20 +13,16 @@ require("dotenv").config();
 const prisma_1 = require("../../global/prisma");
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const now = new Date();
-        const databaseUrl = process.env.DATABASE_URL;
-        console.log(databaseUrl);
         const newUser = yield prisma_1.prisma.users.create({
             data: {
                 line_id: "Ufa55aca331689734988b963e812d9865",
                 firstname: "tathus",
                 lastname: "theerachuwiwat",
+                username: "tathus",
+                password: "1234",
                 email: "tathuswork@gmail.com",
                 phone: "0945492954",
                 image: "https://cdn.discordapp.com/attachments/841948735419842580/1148478321814941696/IMG_1827.png?ex=656eaa49&is=655c3549&hm=de51c84082f665800c458e66104775e85de866dcaed4d8941d60f767a58c759e&",
-                role: "ADMIN",
-                create_at: now,
-                update_at: now
             },
         });
         yield prisma_1.prisma.wood_info.createMany({
@@ -41,8 +37,6 @@ function main() {
                     anatomical_characteristics: "พอร์เป็นแบบ พอร์เดี่ยวส่วนมาก พอร์แฝดมีน้อย การเรียงตัวมีทั้งแบบ solitary และ oblique การกระจายเป็นแบบ กระจัดกระจาย (diffuse porous) ทางภายใน พอร์มี ไทโลส (tylose) เกือบทุกพอร์ พอร์มีขนาดปานกลาง เส้นเรย์เห็นชัด",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -56,8 +50,6 @@ function main() {
                     anatomical_characteristics: "ส่วนใหญ่เป็นแบบ พอร์แฝด (multiple pore) แบบของการเรียงตัวไม่เด่นชัด การกระจายเป็นแบบ กระจัดกระจาย (diffuse porous) พอร์ใหญ่ ภายในพอร์ มีสารตกค้าง (deposit) เป็นบางพอร์ เส้นนเรย์เห็นชัด มีพาเรงคิมาเป็นแบบ พาเรงคิมาแบบกระจาย (diffuse parenchyma)",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -71,8 +63,6 @@ function main() {
                     anatomical_characteristics: "พอร์ เป็นแบบ พอร์เดี่ยว (solitary pore) พอร์แฝด (multiple pore) ปนบ้างเล็กน้อย แบบของ การเรียงตัวไม่เด่นชัด การกระจายเป็นแบบกระจัดกระจาย (diffuse porous) พอร์ใหญ่ มี tylose อยู่เกือบ ทุกพอร์ เส้นเรย์เห็นชัด พาเรงคิมาเป็นแบบ พาเรงคิมาแบบปีก (aliform parenchyma) มีท่อยางต่อเรียง ยาวตัดกับเส้นเรย์",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -86,8 +76,6 @@ function main() {
                     anatomical_characteristics: "พอร์ เป็นแบบ พอร์เดี่ยว (solitary pore) และ พอร์แฝด (mutiple pore) แบบของการเรียงตัว ไม่เด่นชัด การกระจายเป็นแบบ ring porous พอร์มีทั้งใหญ่ และ ขนาดป่านกลาง ภายในพอร์มีสารแทรก (deposit) สีขาว เป็นบางพอร์ เส้นเรย์เห็นชัด พาเรงคิมาเป็นแบบ พาเรงคิมาต้นฤดู (inital parenchyma)",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -106,8 +94,6 @@ function main() {
                     anatomical_characteristics: "พอร์ เป็นแบบ พอร์เดี่ยว (solitary pore) มากกว่า พอร์แฝด (multiple pore) แบบของการเรียงตัว ไม่เด่นชัด การกระจายเป็นแบบ difuse พอร์ใหญ่ ภายในพอร์มีไทโลส (tylose) เกือบทุกพอร์ เสันเรย์เห็นชัด เป็นแบบ diffuse และ พาเรงคิมาแบบปีก (aliform parenchyma) มีท่อยางต่อเรียงยาวตัดกับเส้นเรย์",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -121,8 +107,6 @@ function main() {
                     anatomical_characteristics: "พอร์ เป็นแบบ พอร์เดี่ยว (solitary pore) และ พอร์แฝด (multiple pore) แบบของการเรียงตัว ชัด การกระจายเป็นแบบ กระจัดกระจาย (diffuse porous) พอร์ใหญ่ภายใน (deposit) เกือบทุกพอร์ เส้นเรย์เห็นชัด พาเรงคิมาเป็นแบบ พาเรงคิมาแบบไม่ติดพอร์ (melaacheal parenchyma)",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -136,8 +120,6 @@ function main() {
                     anatomical_characteristics: "พอร์ เป็นแบบ พอร์เดี่ยว (solitary pore) เกือบทั้งหมด แบบของการเรียงตัวไม่เด่นชัด การกระจาย เป็นแบบ กระจัดกระจาย (diffuse porous) พอร์ใหญ่มาก เส้นเรย์เห็นชัด มีท่อยางเรียงต่อกัน 34 ท่อ อยู่ใกล้ ๆ พอร์",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -151,8 +133,6 @@ function main() {
                     anatomical_characteristics: "พอร์ ส่วนมากเป็น พอร์เดี่ยว (solitary pore) พอร์แฝด (multiple pore) มีน้อย แบบของ ยงตัวไม่เด่นชัด การกระจายเป็นแบบ กระจัดกระจาย (diffuse porous) พอร์ใหญ่ ภาย มีสารตกค้าง (deposit) เป็นบางพอร์ เส้นเรย์เห็นไม่ค่อยซัด พาเรงคิมาเป็นแบบ พาเรงคิมาแบบปีก (alform parenchyma) และ พาเรงคิมาแบบปีกต่อ (confuent parenchyma) มีลายริ้ว (ripplemark)",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -166,8 +146,6 @@ function main() {
                     anatomical_characteristics: "พอร์ เป็นแบบ พอร์เดี่ยว (solitary pore) และ พอร์แฝด (multiple pore) แบบของการเรียงตัว ไม่เด่นชัด การกระจายเป็นแบบ กระจัดกระจาย (difuse porous) พอร์ใหญ่ ภายในพอร์มีสารตกค้าง (deposit) สีน้ำตาล เส้นเรย์เห็นชัด พาเรงคิมาเป็นแบบ พาเรงคิมาแบบปีก (aliform parenchyma) พาเรงคิมาแบบปีกต่อ (confluent parenchyma) และ พาเรงคิมาปลายฤดู (terminal parenchyma)",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -181,8 +159,6 @@ function main() {
                     anatomical_characteristics: "พอร์ เป็นแบบ พอร์เดี่ยว (solitary pore) และ พอร์แฝด (mutiple pore) แบบของการเรียงหัว เด่นชัด การกระจายเป็นแบบ กระจัดกระจาย (diffuse porous) พอร์ใหญ่ ทางภายในพอร์ มีไทโลส (tylose) เป็นบางพอร์ พาเรงคิมาเป็นแบบ พาเรงคิมาแบบปีก (aliform parenchyma) พาเรงคิมาแบบปีกต่อ (confluent parenchyma) มีท่อยางที่ยังไม่แข็งตัวต่อเรียงยาวตัดกับเส้นเรย์",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -196,8 +172,6 @@ function main() {
                     anatomical_characteristics: "พอร์เป็นแบบ พอร์เดี่ยว (solitary pore) พอร์แฝดมีน้อย แบบของการเรียงตัวไม่ด่นซัด การกระจายเป็นแบบ กระจัดกระจาย (diffuse porous) พอร์ขนาดปานกลาง ทางภายใน พอร์มีไทโลส (tylose) บ้างเป็นบางพอร์ มีท่อยางต่อเรียงเป็นแนวยาวตัดกับเป็นเส้นเรย์ เส้นเรย์เห็นชัดพาเรงคิมาเป็นแบบ พาเรงคิมาแบบปีก (aliform parenchyma)",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -211,8 +185,6 @@ function main() {
                     anatomical_characteristics: "พอร์มีทั้งแบบ พอร์เดี่ยว (solitary pore) และ พอร์แฝด (multiple pore) แบบของการเรียงตัวไม่เด่นชัด การกระจายเป็นแบบ กระจัดกระจาย (difiuse porous) ทางภายในพอร์มิไทโลส (tylose) บ้างเป็นบางพอร์ พอร์ใหญ่มีท่อยางต่อเป็นแนวยาวเรียงตัดกันเป็นเส้นเรย์ เส้นเรย์เห็นซัด พาเรงคิมาเป็นแบบ พาเรงคิมาแบบกระจาย (diffuse parenchyma) และ พาเรงคิมาแบบปีก (aliform parenchyma)",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
@@ -226,12 +198,62 @@ function main() {
                     anatomical_characteristics: "พอร์เป็นแบบ พอร์เดี่ยว (solitary pore) และ พอร์แฝด (multiple pore) แบบของการเรียงตัว ไม่เด่นชัด การกระจายเป็นแบบ กระจัดกระจาย (diffuse porous) พอร์ใหญ่ ทางภายในพอร์มีไทโลส (tylose) เกือบทุกพอร์มีท่อยางเรียงต่อกันยาวตัดกับเส้นเรย์ เส้นเรย์เห็นชัด พาเรงคิมาเป็นแบบ พาเรงคิมาแบบปีก (aliform parenchyma) และ พาเรงคิมาแบบปีกต่อ (confluent parenchyma)",
                     other: "",
                     status: true,
-                    create_at: now,
-                    update_at: now,
                     create_by: newUser.u_id,
                     update_by: newUser.u_id,
                 },
             ],
+        });
+        const woods = yield prisma_1.prisma.wood_info.findMany();
+        const image_data = [
+            {
+                path: "/image/wood_image/dang.jpg"
+            },
+            {
+                path: "/image/wood_image/chum_pak.jpg"
+            },
+            {
+                path: "/image/wood_image/aek.jpg"
+            },
+            {
+                path: "/image/wood_image/sak.jpg"
+            },
+            {
+                path: "/image/wood_image/rung.jpg"
+            },
+            {
+                path: "/image/wood_image/yangpara.jpg"
+            },
+            {
+                path: "/image/wood_image/yang.jpg"
+            },
+            {
+                path: "/image/wood_image/payung.jpg"
+            },
+            {
+                path: "/image/wood_image/makamong.jpg"
+            },
+            {
+                path: "/image/wood_image/payom.jpg"
+            },
+            {
+                path: "/image/wood_image/takeanrak.jpg"
+            },
+            {
+                path: "/image/wood_image/takeantong.jpg"
+            },
+            {
+                path: "/image/wood_image/teng.jpg"
+            },
+        ];
+        let wood_image_data = [];
+        woods.forEach((wood, index) => {
+            wood_image_data.push({
+                w_id: wood.w_id,
+                path: image_data[index].path
+            });
+        });
+        yield prisma_1.prisma.wood_Image.createMany({
+            data: wood_image_data
         });
     });
 }

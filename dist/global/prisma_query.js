@@ -9,13 +9,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createUser = exports.verifyLogin = exports.getWoodInfo = void 0;
 const prisma_1 = require("./prisma");
 function getWoodInfo() {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield prisma_1.prisma.wood_info.findMany();
+        return yield prisma_1.prisma.wood_info.findMany({
+            include: {
+                wood_image: true
+            }
+        });
     });
 }
-module.exports = {
-    getWoodInfo,
-};
+exports.getWoodInfo = getWoodInfo;
+function verifyLogin(query) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield prisma_1.prisma.users.findMany({
+            where: query,
+        });
+    });
+}
+exports.verifyLogin = verifyLogin;
+function createUser(query) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield prisma_1.prisma.users.create({ data: query });
+    });
+}
+exports.createUser = createUser;
 //# sourceMappingURL=prisma_query.js.map

@@ -103,5 +103,18 @@ router.get("/manual/:id", (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
+router.delete('/manual_delete', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const token = data.token;
+        const w_id = data.id;
+        const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
+        yield (0, prisma_query_manual_1.deleteManual)(w_id, u_id.id);
+        res.status(200).json({ message: "delete success" });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}));
 exports.default = router;
 //# sourceMappingURL=ManualRouter.js.map

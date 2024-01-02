@@ -98,6 +98,24 @@ async function updateManualImage(
   }
 }
 
+async function deleteManual(id: string, u_id: string) {
+    const user = await prisma.users.findMany({
+      where: {
+        u_id: u_id,
+      },
+    });
+  
+    if (user[0].role == "EXPERT") {
+      await prisma.$transaction([
+        prisma.manual.deleteMany({
+          where: {
+            m_id: id,
+          },
+        })
+      ]);
+    }
+  }
+
 async function getAllManual() {
   return await prisma.manual.findMany();
 }
@@ -115,4 +133,5 @@ export {
   getManual,
   updateManualImage,
   updateManualNotImage,
+  deleteManual
 };

@@ -10,6 +10,7 @@ const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const path_1 = __importDefault(require("path"));
 const woodRouter_1 = __importDefault(require("./routes/woodRouter"));
+const ClassifyRouter_1 = __importDefault(require("./routes/ClassifyRouter"));
 const LineWebhook_1 = __importDefault(require("./routes/LineWebhook"));
 const Authentication_1 = __importDefault(require("./routes/Authentication"));
 const ManualRouter_1 = __importDefault(require("./routes/ManualRouter"));
@@ -27,6 +28,7 @@ app.use(woodRouter_1.default);
 app.use(LineWebhook_1.default);
 app.use(Authentication_1.default);
 app.use(ManualRouter_1.default);
+app.use(ClassifyRouter_1.default);
 const port = process.env.PORT;
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

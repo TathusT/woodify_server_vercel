@@ -83,6 +83,7 @@ model Classify{
   status Boolean
   status_verify StatusVerifyEnum
   select_result String
+  image String
   result Json
   create_at DateTime @default(now())
   create_by String

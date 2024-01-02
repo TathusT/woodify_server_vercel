@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateManualNotImage = exports.updateManualImage = exports.getManual = exports.getAllManual = exports.createManual = void 0;
+exports.deleteManual = exports.updateManualNotImage = exports.updateManualImage = exports.getManual = exports.getAllManual = exports.createManual = void 0;
 const prisma_1 = require("./prisma");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
@@ -102,6 +102,25 @@ function updateManualImage(topic, description, status, image, u_id, id) {
     });
 }
 exports.updateManualImage = updateManualImage;
+function deleteManual(id, u_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const user = yield prisma_1.prisma.users.findMany({
+            where: {
+                u_id: u_id,
+            },
+        });
+        if (user[0].role == "EXPERT") {
+            yield prisma_1.prisma.$transaction([
+                prisma_1.prisma.manual.deleteMany({
+                    where: {
+                        m_id: id,
+                    },
+                })
+            ]);
+        }
+    });
+}
+exports.deleteManual = deleteManual;
 function getAllManual() {
     return __awaiter(this, void 0, void 0, function* () {
         return yield prisma_1.prisma.manual.findMany();

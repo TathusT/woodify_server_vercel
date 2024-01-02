@@ -5,6 +5,7 @@ import {
   getManual,
   updateManualImage,
   updateManualNotImage,
+  deleteManual
 } from "../global/prisma_query_manual";
 import { decryptAccessToken } from "../global/token_manager";
 import multer from "multer";
@@ -100,5 +101,18 @@ router.get("/manual/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+router.delete('/manual_delete', async (req, res) =>{
+    try {
+      const data = req.body;
+      const token = data.token;
+      const w_id = data.id
+      const u_id = await decryptAccessToken(token);
+      await deleteManual(w_id, u_id.id)
+      res.status(200).json({ message: "delete success" });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  })
 
 export default router;

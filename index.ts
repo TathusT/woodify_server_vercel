@@ -5,9 +5,11 @@ import cors from "cors";
 import morgan from "morgan";
 import path from "path";
 import WoodRouter from "./routes/woodRouter";
+import ClassifyRouter from "./routes/ClassifyRouter";
 import LineWebhookRouter from './routes/LineWebhook'
 import AuthenRouter from './routes/Authentication'
 import ManualRouter from './routes/ManualRouter'
+
 
 dotenv.config();
 
@@ -25,6 +27,7 @@ app.use(WoodRouter);
 app.use(LineWebhookRouter);
 app.use(AuthenRouter);
 app.use(ManualRouter);
+app.use(ClassifyRouter);
 
 const port = process.env.PORT;
 

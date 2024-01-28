@@ -8,9 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
 const prisma_1 = require("../../global/prisma");
+const cuid_1 = __importDefault(require("cuid"));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const data = [
@@ -46,11 +50,12 @@ function main() {
                 data: {
                     status: true,
                     status_verify: "WAITING_FOR_VERIFICATION",
-                    select_result: randomValue,
+                    select_result: "",
                     result: [],
-                    create_at: new Date(`2024-${formattedMonths}-${formattedDays}`),
-                    create_by: "59f6b189-cf53-4d40-8b6c-ead95cdc164e",
-                    verify_by: "59f6b189-cf53-4d40-8b6c-ead95cdc164e",
+                    session_id_note_room: (0, cuid_1.default)(),
+                    create_by: "149d4147-ebca-4512-bd8f-087a03a55570",
+                    verify_by: null,
+                    image: null
                 },
             });
         }

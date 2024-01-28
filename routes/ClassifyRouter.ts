@@ -6,7 +6,9 @@ import {
   getClassifyWithDate,
   getClassifyWithDay,
   getClassifyWithAll,
-  getClassifyWithWaitForVerify
+  getClassifyWithWaitForVerify,
+  getClassifyById,
+  updateClassify
 } from "../global/prisma_query_classify";
 import { decryptAccessToken } from "../global/token_manager";
 require("dotenv").config();
@@ -35,6 +37,16 @@ router.get("/dashboard_classify_line/:dateFrom/:dateTo", async (req, res) => {
   }
 });
 
+router.get("/classify/:c_id",async (req, res) => {
+    const c_id = req.params.c_id;
+    try {
+      const classify = await getClassifyById(c_id);
+      res.status(200).json(classify);
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+})
+
 router.get('/classify_today',async (req, res) => {
     const data = await getClassifyWithDay();
     res.status(200).json(data)
@@ -49,6 +61,14 @@ router.get('/classify_all',async (req, res) => {
 router.get('/classify_wait_for_verify',async (req, res) => {
     const data = await getClassifyWithWaitForVerify();
     res.status(200).json(data)
+})
+
+router.put('/classify',async (req, res) => {
+  const reqData = req.body
+  const c_id = reqData.c_id
+  const location = reqData.location
+  const data = await updateClassify(c_id, location);
+  res.status(200).json(data)
 })
 
 export default router;

@@ -29,6 +29,7 @@ model Users{
   updated_manuals Manual[] @relation("updated_manuals")
   created_classify Classify[] @relation("created_classify")
   verify_classify Classify[] @relation("verify_classify")
+  notes Note[] @relation("note_creator")
 }
 
 enum roleEnum {
@@ -78,18 +79,20 @@ model Manual{
   updater Users @relation("updated_manuals", fields: [update_by], references: [u_id])
 }
 
-model Classify{
+model Classify {
   c_id String @id @default(uuid())
   status Boolean
   status_verify StatusVerifyEnum
   select_result String
+  session_id_note_room String
   image String
+  location String?
   result Json
   create_at DateTime @default(now())
   create_by String
-  verify_by String
+  verify_by String?
   creator Users @relation("created_classify", fields: [create_by], references: [u_id])
-  verifitor  Users @relation("verify_classify", fields: [verify_by], references: [u_id])
+  verifitor Users? @relation("verify_classify", fields: [verify_by], references: [u_id])
   notes Note[]
 }
 
@@ -102,12 +105,13 @@ enum StatusVerifyEnum {
 model Note{
   n_id String @id @default(uuid())
   c_id String
-  change_result Boolean
-  read_status Boolean
+  change_result Boolean @default(false)
+  read_status Boolean @default(false)
   description String
   create_at DateTime @default(now())
-  create_by Int
+  create_by String
   classify Classify @relation(fields: [c_id], references: [c_id])
+  creator Users @relation("note_creator", fields: [create_by], references: [u_id])
 }
 
 

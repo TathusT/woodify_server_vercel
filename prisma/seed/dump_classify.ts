@@ -1,5 +1,6 @@
 require("dotenv").config();
 import { prisma } from '../../global/prisma'
+import cuid from 'cuid';
 
 async function main() {
   const data = [
@@ -36,11 +37,12 @@ async function main() {
       data: {
         status: true,
         status_verify: "WAITING_FOR_VERIFICATION",
-        select_result: randomValue,
+        select_result: "",
         result: [],
-        create_at : new Date(`2024-${formattedMonths}-${formattedDays}`),
-        create_by: "59f6b189-cf53-4d40-8b6c-ead95cdc164e",
-        verify_by: "59f6b189-cf53-4d40-8b6c-ead95cdc164e",
+        session_id_note_room : cuid(),
+        create_by: "149d4147-ebca-4512-bd8f-087a03a55570",
+        verify_by: null,
+        image : null
       },
     });
   }

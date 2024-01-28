@@ -1,4 +1,6 @@
 import { prisma } from "./prisma";
+import { getUserFromLineId } from "./prisma_query_user";
+import cuid from 'cuid';
 
 type GroupByArgs<T> = {
   by: Array<keyof T>;
@@ -116,6 +118,15 @@ const getClassifyWithAll = async () => {
   return result;
 };
 
+const getClassifyById = async (c_id : string) => {
+  const classify = await prisma.classify.findFirst({
+    where : {
+      c_id : c_id
+    }
+  })
+  return classify;
+}
+
 const getClassifyWithWaitForVerify = async () => {
   const result = await prisma.classify.count({
     where : {
@@ -125,10 +136,40 @@ const getClassifyWithWaitForVerify = async () => {
   return result;
 };
 
+const createClassifyDB = async (prediction : any, line_id : string, imagePath : string) => {
+  const userId = await getUserFromLineId(line_id);
+  return await prisma.classify.create({
+    data: {
+      status: true,
+      status_verify: "WAITING_FOR_VERIFICATION",
+      select_result: prediction.prediction[0].wood,
+      result: prediction.prediction,
+      session_id_note_room : cuid(),
+      create_by: userId.u_id,
+      verify_by: null,
+      image : imagePath
+    },
+  });
+}
+
+const updateClassify = async (c_id : string, location : string) => {
+  return await prisma.classify.update({
+    where : {
+      c_id : c_id
+    },
+    data: {
+      location : location
+    }
+});
+}
+
 export {
   getClassifyCountByWood,
   getClassifyWithDate,
   getClassifyWithDay,
   getClassifyWithAll,
-  getClassifyWithWaitForVerify
+  getClassifyWithWaitForVerify,
+  getClassifyById,
+  createClassifyDB,
+  updateClassify
 };

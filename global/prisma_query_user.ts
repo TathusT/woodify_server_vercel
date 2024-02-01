@@ -26,5 +26,16 @@ const getUserFromUserId = async (uid: string) => {
   });
 };
 
+const updateRoleFromId = async (uid : string, role : any) => {
+  return await prisma.users.update({
+    where : {
+      u_id : uid
+    },
+    data : {
+      role : role
+    }
+  })
+}
 
-export { getUserFromLineId, getUserFromUserId, getAllUser };
+
+export { getUserFromLineId, getUserFromUserId, getAllUser, updateRoleFromId };

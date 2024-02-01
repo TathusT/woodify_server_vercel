@@ -129,18 +129,22 @@ async function deleteWoodInfo(id: string, u_id: string) {
   });
 
   if (user[0].role == "EXPERT") {
-    await prisma.$transaction([
-      prisma.wood_Image.deleteMany({
-        where: {
-          w_id: id,
-        },
-      }),
-      prisma.wood_info.delete({
-        where: {
-          w_id: id,
-        },
-      }),
-    ]);
+    try {
+      await prisma.$transaction([
+        prisma.wood_Image.deleteMany({
+          where: {
+            w_id: id,
+          },
+        }),
+        prisma.wood_info.delete({
+          where: {
+            w_id: id,
+          },
+        }),
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 

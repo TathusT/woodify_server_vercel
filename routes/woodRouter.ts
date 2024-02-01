@@ -120,8 +120,10 @@ router.delete('/wood_delete', async (req, res) =>{
   try {
     const data = req.body;
     const token = data.token;
-    const w_id = data.id
+    const w_id = data.w_id
     const u_id = await decryptAccessToken(token);
+    console.log(w_id, token);
+    
     await deleteWoodInfo(w_id, u_id.id)
     res.status(200).json({ message: "delete success" });
   } catch (error) {

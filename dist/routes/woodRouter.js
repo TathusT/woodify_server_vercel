@@ -124,8 +124,9 @@ router.delete('/wood_delete', (req, res) => __awaiter(void 0, void 0, void 0, fu
     try {
         const data = req.body;
         const token = data.token;
-        const w_id = data.id;
+        const w_id = data.w_id;
         const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
+        console.log(w_id, token);
         yield (0, prisma_query_wood_1.deleteWoodInfo)(w_id, u_id.id);
         res.status(200).json({ message: "delete success" });
     }

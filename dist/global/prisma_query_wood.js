@@ -128,18 +128,23 @@ function deleteWoodInfo(id, u_id) {
             },
         });
         if (user[0].role == "EXPERT") {
-            yield prisma_1.prisma.$transaction([
-                prisma_1.prisma.wood_Image.deleteMany({
-                    where: {
-                        w_id: id,
-                    },
-                }),
-                prisma_1.prisma.wood_info.delete({
-                    where: {
-                        w_id: id,
-                    },
-                }),
-            ]);
+            try {
+                yield prisma_1.prisma.$transaction([
+                    prisma_1.prisma.wood_Image.deleteMany({
+                        where: {
+                            w_id: id,
+                        },
+                    }),
+                    prisma_1.prisma.wood_info.delete({
+                        where: {
+                            w_id: id,
+                        },
+                    }),
+                ]);
+            }
+            catch (error) {
+                console.log(error);
+            }
         }
     });
 }

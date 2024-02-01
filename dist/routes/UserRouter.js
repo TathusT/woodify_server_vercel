@@ -35,5 +35,17 @@ router.get("/user", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
+router.put("/update_role", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const uid = data.u_id;
+        const role = data.role;
+        const user = yield (0, prisma_query_user_1.updateRoleFromId)(uid, role);
+        res.status(200).json({ message: "update role success", data: user });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 exports.default = router;
 //# sourceMappingURL=UserRouter.js.map

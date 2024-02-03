@@ -32,7 +32,8 @@ function main() {
             "ตะเคียนทอง",
             "เต็ง",
         ];
-        for (let i = 0; i < 500; i++) {
+        const status = ['WAITING_FOR_VERIFICATION', 'PASSED_CERTIFICATION', 'FAILED_CERTIFICATION'];
+        for (let i = 0; i < 8000; i++) {
             const randomIndex = Math.floor(Math.random() * data.length);
             let randomMonth = Math.floor(Math.random() * 12) + 1;
             const days = Math.floor(Math.random() * 27) + 1;
@@ -46,16 +47,18 @@ function main() {
             }
             const formattedMonths = randomMonth < 10 ? `0${randomMonth}` : `${randomMonth}`;
             console.log(formattedDays, formattedMonths);
+            const randomValueStatus = Math.floor(Math.random() * 3);
             yield prisma_1.prisma.classify.create({
                 data: {
                     status: true,
-                    status_verify: "WAITING_FOR_VERIFICATION",
-                    select_result: "",
+                    status_verify: status[randomValueStatus],
+                    select_result: data[Math.floor(Math.random() * 13)],
                     result: [],
                     session_id_note_room: (0, cuid_1.default)(),
+                    create_at: new Date(`2024-${formattedMonths}-${formattedDays}`),
                     create_by: "149d4147-ebca-4512-bd8f-087a03a55570",
                     verify_by: null,
-                    image: null
+                    image: ''
                 },
             });
         }

@@ -8,7 +8,10 @@ import {
   getClassifyWithAll,
   getClassifyWithWaitForVerify,
   getClassifyById,
-  updateClassify
+  updateClassify,
+  getClassifyToday,
+  getClassifyAll,
+  getPieChartStatusData
 } from "../global/prisma_query_classify";
 import { decryptAccessToken } from "../global/token_manager";
 require("dotenv").config();
@@ -37,6 +40,27 @@ router.get("/dashboard_classify_line/:dateFrom/:dateTo", async (req, res) => {
   }
 });
 
+router.get("/get_classiy_today", async (req, res) => {
+  const today = new Date();
+  try {
+    const classifyCount = await getClassifyToday(today);
+    res.status(200).json(classifyCount);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+router.get("/get_classiy_status", async (req, res) => {
+  try {
+    const classifyCount = await getPieChartStatusData();
+    res.status(200).json(classifyCount);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 router.get("/classify/:c_id",async (req, res) => {
     const c_id = req.params.c_id;
     try {
@@ -45,6 +69,17 @@ router.get("/classify/:c_id",async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
+})
+
+router.get("/classify/:currentPage/:pageSize",async (req, res) => {
+  try {
+    const page = req.params.currentPage;
+    const pageSize = req.params.pageSize
+    const classify = await getClassifyAll(parseInt(page), parseInt(pageSize));
+    res.status(200).json(classify);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 })
 
 router.get('/classify_today',async (req, res) => {
@@ -57,8 +92,13 @@ router.get('/classify_all',async (req, res) => {
     res.status(200).json(data)
 })
 
+router.get('/classify_verify', async (req, res) => {
+  const data = await getClassifyWithAll();
+  res.status(200).json(data)
+})
 
-router.get('/classify_wait_for_verify',async (req, res) => {
+
+router.get('/classify_wait_for_verify', async (req, res) => {
     const data = await getClassifyWithWaitForVerify();
     res.status(200).json(data)
 })

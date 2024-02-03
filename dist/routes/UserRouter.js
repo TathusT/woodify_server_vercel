@@ -35,6 +35,15 @@ router.get("/user", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
+router.get("/user_today", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield (0, prisma_query_user_1.getUserToday)();
+        res.status(200).json(users);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 router.put("/update_role", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;

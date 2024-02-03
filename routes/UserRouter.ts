@@ -1,6 +1,6 @@
 import express from 'express';
 import { Router } from 'express';
-import { getUserFromUserId, getAllUser, updateRoleFromId } from '../global/prisma_query_user';
+import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday } from '../global/prisma_query_user';
 require('dotenv').config();
 
 const router: Router = express.Router();
@@ -23,6 +23,17 @@ router.get("/user",async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 })
+
+router.get("/user_today",async (req, res) => {
+  try {
+    const users = await getUserToday();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
+
 
 router.put("/update_role",async (req, res) => {
   try {

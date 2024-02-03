@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
+exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
 const prisma_1 = require("./prisma");
 const getUserFromLineId = (lineid) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.findFirst({
@@ -26,6 +26,20 @@ const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.findMany();
 });
 exports.getAllUser = getAllUser;
+const getUserToday = () => __awaiter(void 0, void 0, void 0, function* () {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const result = yield prisma_1.prisma.users.count({
+        where: {
+            create_at: {
+                gte: today, // มากกว่าหรือเท่ากับวันที่เท่ากับวันนี้
+                lt: new Date(today.getTime() + 24 * 60 * 60 * 1000), // น้อยกว่าวันพรุ่งนี้
+            },
+        },
+    });
+    return result;
+});
+exports.getUserToday = getUserToday;
 const getUserFromUserId = (uid) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.findFirst({
         where: {
@@ -40,11 +54,11 @@ exports.getUserFromUserId = getUserFromUserId;
 const updateRoleFromId = (uid, role) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.update({
         where: {
-            u_id: uid
+            u_id: uid,
         },
         data: {
-            role: role
-        }
+            role: role,
+        },
     });
 });
 exports.updateRoleFromId = updateRoleFromId;

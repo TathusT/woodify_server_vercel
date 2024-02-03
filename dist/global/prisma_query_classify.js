@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateClassify = exports.createClassifyDB = exports.getClassifyById = exports.getClassifyWithWaitForVerify = exports.getClassifyWithAll = exports.getClassifyWithDay = exports.getClassifyWithDate = exports.getClassifyCountByWood = void 0;
+exports.getPieChartStatusData = exports.getClassifyAll = exports.getClassifyWithVerify = exports.getClassifyToday = exports.updateClassify = exports.createClassifyDB = exports.getClassifyById = exports.getClassifyWithWaitForVerify = exports.getClassifyWithAll = exports.getClassifyWithDay = exports.getClassifyWithDate = exports.getClassifyCountByWood = void 0;
 const prisma_1 = require("./prisma");
 const prisma_query_user_1 = require("./prisma_query_user");
 const cuid_1 = __importDefault(require("cuid"));
@@ -94,14 +94,50 @@ const getClassifyWithDate = (dateFrom, dateTo) => __awaiter(void 0, void 0, void
     return resultData;
 });
 exports.getClassifyWithDate = getClassifyWithDate;
+const getClassifyToday = (today) => __awaiter(void 0, void 0, void 0, function* () {
+    today.setHours(0, 0, 0, 0);
+    const result = yield prisma_1.prisma.classify.count({
+        where: {
+            create_at: {
+                gte: today,
+                lt: new Date(today.getTime() + 24 * 60 * 60 * 1000),
+            },
+        },
+    });
+    return result;
+});
+exports.getClassifyToday = getClassifyToday;
+const getClassifyAll = (page, pageSize) => __awaiter(void 0, void 0, void 0, function* () {
+    const skip = (page - 1) * pageSize;
+    const data = yield prisma_1.prisma.classify.findMany({
+        skip,
+        take: pageSize,
+        orderBy: {
+            create_at: 'desc'
+        }
+    });
+    const total = yield prisma_1.prisma.classify.count();
+    return { data, total };
+});
+exports.getClassifyAll = getClassifyAll;
+const getPieChartStatusData = () => __awaiter(void 0, void 0, void 0, function* () {
+    const counts = yield prisma_1.prisma.classify.groupBy({
+        by: ['status_verify'],
+        _count: {
+            status_verify: true,
+        }
+    });
+    return counts;
+});
+exports.getPieChartStatusData = getPieChartStatusData;
 const getClassifyWithDay = () => __awaiter(void 0, void 0, void 0, function* () {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const result = yield prisma_1.prisma.classify.count({
         where: {
             create_at: {
-                gte: today, // มากกว่าหรือเท่ากับวันที่เท่ากับวันนี้
-                lt: new Date(today.getTime() + 24 * 60 * 60 * 1000), // น้อยกว่าวันพรุ่งนี้
+                gte: today,
+                lt: new Date(today.getTime() + 24 * 60 * 60 * 1000),
             },
         },
     });
@@ -116,8 +152,8 @@ exports.getClassifyWithAll = getClassifyWithAll;
 const getClassifyById = (c_id) => __awaiter(void 0, void 0, void 0, function* () {
     const classify = yield prisma_1.prisma.classify.findFirst({
         where: {
-            c_id: c_id
-        }
+            c_id: c_id,
+        },
     });
     return classify;
 });
@@ -125,12 +161,21 @@ exports.getClassifyById = getClassifyById;
 const getClassifyWithWaitForVerify = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.prisma.classify.count({
         where: {
-            status_verify: "WAITING_FOR_VERIFICATION"
-        }
+            status_verify: "WAITING_FOR_VERIFICATION",
+        },
     });
     return result;
 });
 exports.getClassifyWithWaitForVerify = getClassifyWithWaitForVerify;
+const getClassifyWithVerify = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.prisma.classify.count({
+        where: {
+            status_verify: "PASSED_CERTIFICATION",
+        },
+    });
+    return result;
+});
+exports.getClassifyWithVerify = getClassifyWithVerify;
 const createClassifyDB = (prediction, line_id, imagePath) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = yield (0, prisma_query_user_1.getUserFromLineId)(line_id);
     return yield prisma_1.prisma.classify.create({
@@ -142,7 +187,7 @@ const createClassifyDB = (prediction, line_id, imagePath) => __awaiter(void 0, v
             session_id_note_room: (0, cuid_1.default)(),
             create_by: userId.u_id,
             verify_by: null,
-            image: imagePath
+            image: imagePath,
         },
     });
 });
@@ -150,11 +195,11 @@ exports.createClassifyDB = createClassifyDB;
 const updateClassify = (c_id, location) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.classify.update({
         where: {
-            c_id: c_id
+            c_id: c_id,
         },
         data: {
-            location: location
-        }
+            location: location,
+        },
     });
 });
 exports.updateClassify = updateClassify;

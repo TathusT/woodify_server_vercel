@@ -38,10 +38,40 @@ router.get("/dashboard_classify_line/:dateFrom/:dateTo", (req, res) => __awaiter
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
+router.get("/get_classiy_today", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const today = new Date();
+    try {
+        const classifyCount = yield (0, prisma_query_classify_1.getClassifyToday)(today);
+        res.status(200).json(classifyCount);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.get("/get_classiy_status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const classifyCount = yield (0, prisma_query_classify_1.getPieChartStatusData)();
+        res.status(200).json(classifyCount);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 router.get("/classify/:c_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const c_id = req.params.c_id;
     try {
         const classify = yield (0, prisma_query_classify_1.getClassifyById)(c_id);
+        res.status(200).json(classify);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.get("/classify/:currentPage/:pageSize", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.params.currentPage;
+        const pageSize = req.params.pageSize;
+        const classify = yield (0, prisma_query_classify_1.getClassifyAll)(parseInt(page), parseInt(pageSize));
         res.status(200).json(classify);
     }
     catch (error) {
@@ -53,6 +83,10 @@ router.get('/classify_today', (req, res) => __awaiter(void 0, void 0, void 0, fu
     res.status(200).json(data);
 }));
 router.get('/classify_all', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield (0, prisma_query_classify_1.getClassifyWithAll)();
+    res.status(200).json(data);
+}));
+router.get('/classify_verify', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield (0, prisma_query_classify_1.getClassifyWithAll)();
     res.status(200).json(data);
 }));

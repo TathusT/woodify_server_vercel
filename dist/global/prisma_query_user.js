@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
+exports.checkUsername = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
 const prisma_1 = require("./prisma");
 const getUserFromLineId = (lineid) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.findFirst({
@@ -62,4 +62,28 @@ const updateRoleFromId = (uid, role) => __awaiter(void 0, void 0, void 0, functi
     });
 });
 exports.updateRoleFromId = updateRoleFromId;
+const getUserWithEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma_1.prisma.users.findFirst({
+        where: {
+            email: email
+        }
+    });
+});
+exports.getUserWithEmail = getUserWithEmail;
+const getCountExpert = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma_1.prisma.users.count({
+        where: {
+            role: "EXPERT"
+        }
+    });
+});
+exports.getCountExpert = getCountExpert;
+const checkUsername = (username) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma_1.prisma.users.count({
+        where: {
+            username: username
+        }
+    });
+});
+exports.checkUsername = checkUsername;
 //# sourceMappingURL=prisma_query_user.js.map

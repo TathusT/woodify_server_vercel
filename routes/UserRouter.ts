@@ -1,6 +1,7 @@
 import express from 'express';
 import { Router } from 'express';
-import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday } from '../global/prisma_query_user';
+import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, checkUsername } from '../global/prisma_query_user';
+const nodemailer = require("nodemailer");
 require('dotenv').config();
 
 const router: Router = express.Router();
@@ -46,5 +47,76 @@ router.put("/update_role",async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 })
+
+
+router.post("/send_email", async function (req, res, next) {
+  let email = req.body.email;
+
+  const checkEmail : any = await getUserWithEmail(email);
+  if(checkEmail != null){
+    return res.json({status : 200, message : 'email is taken'});
+  }
+  let chars =
+    "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let passwordLength = 8;
+  let password = "";
+  for (let i = 0; i <= passwordLength; i++) {
+    let randomNumber = Math.floor(Math.random() * chars.length);
+    password += chars.substring(randomNumber, randomNumber + 1);
+  }
+
+  let charsAdmin = '0123456789'
+  let accNumber = 8;
+  let genAcc = ""
+  while (true) {
+    genAcc = ""
+    for (let i = 0; i <= accNumber; i++) {
+      let randomNumberAcc = Math.floor(Math.random() * charsAdmin.length);
+      genAcc += chars.substring(randomNumberAcc, randomNumberAcc + 1);
+    }
+    const checkUser = await checkUsername(`admin${genAcc}`)
+    if(checkUser == null){
+      break;
+    }
+    else{
+      break;
+    }
+  }
+  try {
+    const output = `
+              <p>You have a invite to expert user in Woodify</p>
+              <h3>Link for register</h3>
+              <ul>
+                  <li>username : admin${parseInt(genAcc)}</li>
+                  <li>password : ${password}</li>
+              </ul>
+              `;
+    var transporter = nodemailer.createTransport({
+      service : "gmail",
+      auth: {
+        user: "63070065@kmitl.ac.th",
+        pass: "SakuraHiro8852",
+      },
+    });
+
+    var mailOptions = {
+      from: "63070065@kmitl.ac.th",
+      to: `${email}`,
+      subject: "Verify to expert account",
+      text: "from admin woodify",
+      html: output,
+    };
+
+    transporter.sendMail(mailOptions, function (error : any, info : any) {
+      if (error) {
+        console.log(error);
+      } else {
+        res.json({status : 200, message : "send success"});
+      }
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
 
 export default router;

@@ -51,4 +51,37 @@ const updateRoleFromId = async (uid: string, role: any) => {
   });
 };
 
-export { getUserFromLineId, getUserFromUserId, getAllUser, updateRoleFromId, getUserToday };
+const getUserWithEmail = async (email : string) => {
+  return await prisma.users.findFirst({
+    where : {
+      email : email
+    }
+  })
+};
+
+const getCountExpert = async () => {
+  return await prisma.users.count({
+    where : {
+      role : "EXPERT"
+    }
+  })
+}
+
+const checkUsername = async (username : string) => {
+  return await prisma.users.count({
+    where : {
+      username : username
+    }
+  })
+}
+
+export {
+  getUserFromLineId,
+  getUserFromUserId,
+  getAllUser,
+  updateRoleFromId,
+  getUserToday,
+  getUserWithEmail,
+  getCountExpert,
+  checkUsername
+};

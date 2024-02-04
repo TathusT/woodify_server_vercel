@@ -160,6 +160,9 @@ const getClassifyById = async (c_id: string) => {
     where: {
       c_id: c_id,
     },
+    include : {
+      creator : true
+    }
   });
   return classify;
 };

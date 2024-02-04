@@ -154,6 +154,9 @@ const getClassifyById = (c_id) => __awaiter(void 0, void 0, void 0, function* ()
         where: {
             c_id: c_id,
         },
+        include: {
+            creator: true
+        }
     });
     return classify;
 });

@@ -8,6 +8,7 @@ import FormData from "form-data";
 import { lineConfig } from "../global/line/line_config";
 import { getWoodInfo } from "../global/prisma_query_wood";
 import { createClassifyDB } from "../global/prisma_query_classify";
+
 const router: Router = express.Router();
 
 const client = new line.Client(lineConfig);
@@ -207,7 +208,7 @@ const createManualCarousel = async (uid: string) => {
   let more = false;
   let max = 12;
   const dataManual = await prisma.manual.findMany();
-  
+
   if (dataManual.length > max) {
     sliceManual = dataManual.slice(0, max);
   }
@@ -471,6 +472,11 @@ const createClassify = async (uid: string, event: any) => {
                               size: "xl",
                               align: "start",
                             },
+                            {
+                              type: "icon",
+                              url:  `${process.env.PATH_BACKEND}/image/svg/passIcon.svg`,
+                              size: "xs"
+                            }
                           ],
                         },
                         footer: {

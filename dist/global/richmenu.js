@@ -15,9 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sessionOut = exports.afterLoginSuccessExpert = exports.afterLoginSuccessUser = void 0;
 const axios_1 = __importDefault(require("axios"));
 const line_config_1 = require("./line/line_config");
+const richmenu_1 = require("./line/richmenu");
 function afterLoginSuccessUser(uid) {
     return __awaiter(this, void 0, void 0, function* () {
-        let urlRequest = `https://api.line.me/v2/bot/user/${uid}/richmenu/richmenu-b249cae10c20e8f1b01658430fc7a47d`;
+        console.log(uid, richmenu_1.loginLine);
+        let urlRequest = `https://api.line.me/v2/bot/user/${uid}/richmenu/${richmenu_1.loginLine}`;
         yield axios_1.default.request({
             method: "POST",
             url: `${urlRequest}`,
@@ -30,7 +32,7 @@ function afterLoginSuccessUser(uid) {
 exports.afterLoginSuccessUser = afterLoginSuccessUser;
 function afterLoginSuccessExpert(uid) {
     return __awaiter(this, void 0, void 0, function* () {
-        let urlRequest = `https://api.line.me/v2/bot/user/${uid}/richmenu/richmenu-792069faa05a7bac91e5821bfcf94932`;
+        let urlRequest = `https://api.line.me/v2/bot/user/${uid}/richmenu/${richmenu_1.loginLine}`;
         yield axios_1.default.request({
             method: "POST",
             url: `${urlRequest}`,
@@ -43,7 +45,7 @@ function afterLoginSuccessExpert(uid) {
 exports.afterLoginSuccessExpert = afterLoginSuccessExpert;
 function sessionOut(uid) {
     return __awaiter(this, void 0, void 0, function* () {
-        let urlRequest = `https://api.line.me/v2/bot/user/${uid}/richmenu/richmenu-e4c016ca164f3b51441760c88f259962`;
+        let urlRequest = `https://api.line.me/v2/bot/user/${uid}/richmenu/${richmenu_1.notLoginLine}`;
         yield axios_1.default.request({
             method: "POST",
             url: `${urlRequest}`,

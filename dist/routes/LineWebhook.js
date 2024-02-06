@@ -484,6 +484,11 @@ const createClassify = (uid, event) => __awaiter(void 0, void 0, void 0, functio
                                                     size: "xl",
                                                     align: "start",
                                                 },
+                                                {
+                                                    type: "icon",
+                                                    url: `${process.env.PATH_BACKEND}/image/svg/passIcon.svg`,
+                                                    size: "xs"
+                                                }
                                             ],
                                         },
                                         footer: {

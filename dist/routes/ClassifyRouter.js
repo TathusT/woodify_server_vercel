@@ -78,8 +78,52 @@ router.get("/classify/:currentPage/:pageSize", (req, res) => __awaiter(void 0, v
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
+router.post("/classify", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const page = data.currentPage;
+        const pageSize = data.pageSize;
+        const filter = data.filter;
+        const classify = yield (0, prisma_query_classify_1.getClassifyAllFilter)(parseInt(page), parseInt(pageSize), filter);
+        res.status(200).json(classify);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.get("/classify_user_id/:currentPage/:pageSize/:u_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.params.currentPage;
+        const pageSize = req.params.pageSize;
+        const uid = req.params.u_id;
+        const classify = yield (0, prisma_query_classify_1.getClassifyAllWithUserId)(parseInt(page), parseInt(pageSize), uid);
+        res.status(200).json(classify);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.post("/classify_user_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const page = data.currentPage;
+        const pageSize = data.pageSize;
+        const uid = data.u_id;
+        const filter = data.filter;
+        const classify = yield (0, prisma_query_classify_1.getClassifyAllWithUserId)(parseInt(page), parseInt(pageSize), uid, filter);
+        res.status(200).json(classify);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 router.get('/classify_today', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield (0, prisma_query_classify_1.getClassifyWithDay)();
+    res.status(200).json(data);
+}));
+router.get('/classify_today_with_user_id/:u_id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const u_id = req.params.u_id;
+    const data = yield (0, prisma_query_classify_1.getClassifyWithDayWithUserId)(u_id);
     res.status(200).json(data);
 }));
 router.get('/classify_all', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -94,11 +138,33 @@ router.get('/classify_wait_for_verify', (req, res) => __awaiter(void 0, void 0, 
     const data = yield (0, prisma_query_classify_1.getClassifyWithWaitForVerify)();
     res.status(200).json(data);
 }));
+router.get('/classify_wait_for_verify/:u_id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const u_id = req.params.u_id;
+    const data = yield (0, prisma_query_classify_1.getClassifyWithWaitForVerifyWithUserId)(u_id);
+    res.status(200).json(data);
+}));
 router.put('/classify', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const reqData = req.body;
     const c_id = reqData.c_id;
     const location = reqData.location;
     const data = yield (0, prisma_query_classify_1.updateClassify)(c_id, location);
+    res.status(200).json(data);
+}));
+router.get('/classify_donut_with_userid/:u_id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const u_id = req.params.u_id;
+    const data = yield (0, prisma_query_classify_1.getClassifyByUserIdDonutChart)(u_id);
+    res.status(200).json(data);
+}));
+router.post('/classify_donut_with_userid_query', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = req.body;
+    const u_id = data.u_id;
+    const filter = data.filter;
+    const wood = yield (0, prisma_query_classify_1.getClassifyByUserIdDonutChart)(u_id, filter);
+    res.status(200).json(wood);
+}));
+router.get('/classify_status_donut_with_userid/:u_id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const u_id = req.params.u_id;
+    const data = yield (0, prisma_query_classify_1.getClassifyStatusByUserIdDonutChart)(u_id);
     res.status(200).json(data);
 }));
 exports.default = router;

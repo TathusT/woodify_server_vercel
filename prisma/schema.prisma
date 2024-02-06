@@ -114,5 +114,13 @@ model Note{
   creator Users @relation("note_creator", fields: [create_by], references: [u_id])
 }
 
+model Add_Token {
+  n_id String @id @default(uuid())
+  invited_by String
+  invited_to String
+  create_at DateTime @default(now())
+  time_out DateTime @default(dbgenerated("now() + interval '30 minutes'"))
+}
+
 
 

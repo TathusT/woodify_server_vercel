@@ -14,14 +14,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const prisma_query_user_1 = require("../global/prisma_query_user");
+const token_manager_1 = require("../global/token_manager");
 const nodemailer = require("nodemailer");
 require('dotenv').config();
 const router = express_1.default.Router();
 router.get("/user/:u_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const u_id = req.params.u_id;
     try {
-        const classify = yield (0, prisma_query_user_1.getUserFromUserId)(u_id);
-        res.status(200).json(classify);
+        const user = yield (0, prisma_query_user_1.getUserFromUserId)(u_id);
+        res.status(200).json(user);
     }
     catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
@@ -40,6 +41,18 @@ router.get("/user_today", (req, res) => __awaiter(void 0, void 0, void 0, functi
     try {
         const users = yield (0, prisma_query_user_1.getUserToday)();
         res.status(200).json(users);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.post('/user_with_token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const token = data.token;
+        const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
+        const user = yield (0, prisma_query_user_1.getUserFromUserId)(u_id.id);
+        res.status(200).json(user);
     }
     catch (error) {
         res.status(500).json({ error: "Internal Server Error" });

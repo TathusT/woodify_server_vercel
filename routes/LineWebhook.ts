@@ -25,19 +25,16 @@ router.post("/webhook", async (req, res) => {
 const createWoodCarousel = async (uid: string) => {
   const objectBubble: any = [];
   const dataWood = await getWoodInfo();
+  const max = 5;
+  let more = false;
   let urlRequest;
-  const objectsPerGroup = 12;
-  const groupedData = Array.from(
-    { length: Math.ceil(dataWood.length / objectsPerGroup) },
-    (_, index) => {
-      const start = index * objectsPerGroup;
-      const end = start + objectsPerGroup;
-      return dataWood.slice(start, end);
-    }
-  );
-
-  groupedData.forEach((group) => {
-    const groupObjects = group.map((wood) => ({
+  let sliceWood;
+  if (dataWood.length > max) {
+    sliceWood = dataWood.slice(0, max);
+    more = true;
+  }
+  sliceWood.forEach((wood) => {
+    objectBubble.push({
       type: "bubble",
       hero: {
         type: "image",
@@ -107,40 +104,117 @@ const createWoodCarousel = async (uid: string) => {
         ],
         flex: 0,
       },
-    }));
-
-    objectBubble.push(groupObjects);
+    });
   });
-  for (const value of objectBubble) {
-    urlRequest = `https://api.line.me/v2/bot/message/push`;
-    await axios.request({
-      method: "POST",
-      url: `${urlRequest}`,
-      headers: {
-        Authorization: `Bearer ` + lineConfig.channelAccessToken,
-        "Content-Type": "application/json",
+
+  if (more) {
+    objectBubble.push({
+      type: "bubble",
+      hero: {
+        type: "image",
+        url: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ4IuDW4CkzB5rwYtOm_YuCZmnDVPdi8IZMQ&usqp=CAU`,
+        size: "full",
+        aspectRatio: "20:13",
+        aspectMode: "cover",
+        action: {
+          type: "uri",
+          uri: `${process.env.PATH_FRONT}/line/information_wood`,
+        },
       },
-      data: {
-        to: uid,
-        messages: [
+      body: {
+        type: "box",
+        layout: "vertical",
+        contents: [
           {
-            type: "flex",
-            altText: "This is a Flex Message",
-            contents: {
-              type: "carousel",
-              contents: value,
-            },
+            type: "text",
+            text: `ดูต้นไม้ทั้งหมด`,
+            weight: "bold",
+            size: "xl",
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            margin: "lg",
+            spacing: "sm",
+            contents: [
+              {
+                type: "box",
+                layout: "baseline",
+                spacing: "sm",
+                contents: [
+                  {
+                    type: "text",
+                    text: `กดดูรายละเอียดเพิ่มเติมเพื่อดูต้นไม้ทั้งหมด`,
+                    wrap: true,
+                    color: "#666666",
+                    size: "sm",
+                    flex: 5,
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            height: "sm",
+            action: {
+              type: "uri",
+              label: "ดูรายละเอียดทั้งหมด",
+              uri: `${process.env.PATH_FRONT}/line/information_wood`,
+            },
+          },
+        ],
+        flex: 0,
+      },
     });
-  }
+  } 
+
+  urlRequest = `https://api.line.me/v2/bot/message/push`;
+  await axios.request({
+    method: "POST",
+    url: `${urlRequest}`,
+    headers: {
+      Authorization: `Bearer ` + lineConfig.channelAccessToken,
+      "Content-Type": "application/json",
+    },
+    data: {
+      to: uid,
+      messages: [
+        {
+          type: "flex",
+          altText: "This is a Flex Message",
+          contents: {
+            type: "carousel",
+            contents: objectBubble,
+          },
+        },
+      ],
+    },
+  });
 };
 
 const createManualCarousel = async (uid: string) => {
   let objectBubble: any = [];
+  let sliceManual;
+  let more = false;
+  let max = 12;
   const dataManual = await prisma.manual.findMany();
-  dataManual.forEach((manual) => {
+  
+  if (dataManual.length > max) {
+    sliceManual = dataManual.slice(0, max);
+  }
+  else{
+    sliceManual = dataManual
+  }
+  sliceManual.forEach((manual) => {
     objectBubble.push({
       type: "bubble",
       hero: {
@@ -192,6 +266,77 @@ const createManualCarousel = async (uid: string) => {
       },
     });
   });
+
+  if (more) {
+    objectBubble.push({
+      type: "bubble",
+      hero: {
+        type: "image",
+        url: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ4IuDW4CkzB5rwYtOm_YuCZmnDVPdi8IZMQ&usqp=CAU`,
+        size: "full",
+        aspectRatio: "20:13",
+        aspectMode: "cover",
+        action: {
+          type: "uri",
+          uri: `${process.env.PATH_FRONT}/line/information_wood`,
+        },
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "text",
+            text: `ดูคู่มือทั้งหมด`,
+            weight: "bold",
+            size: "xl",
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            margin: "lg",
+            spacing: "sm",
+            contents: [
+              {
+                type: "box",
+                layout: "baseline",
+                spacing: "sm",
+                contents: [
+                  {
+                    type: "text",
+                    text: `กดดูรายละเอียดเพิ่มเติมเพื่อดูคู่มือทั้งหมด`,
+                    wrap: true,
+                    color: "#666666",
+                    size: "sm",
+                    flex: 5,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            height: "sm",
+            action: {
+              type: "uri",
+              label: "ดูรายละเอียดทั้งหมด",
+              uri: `${process.env.PATH_FRONT}/line/information_wood`,
+            },
+          },
+        ],
+        flex: 0,
+      },
+    });
+  }
+
   const urlRequest = "https://api.line.me/v2/bot/message/push";
 
   try {
@@ -260,7 +405,7 @@ const createClassify = async (uid: string, event: any) => {
               (a: any, b: any) => b.percentage - a.percentage
             );
             console.log(dataPrediction);
-            
+
             if (dataPrediction.prediction[0].percentage < 50) {
               try {
                 client.replyMessage(event.replyToken, {
@@ -281,7 +426,11 @@ const createClassify = async (uid: string, event: any) => {
                 }
               }
             } else {
-              const classify = await createClassifyDB(dataPrediction, uid, imagePath);
+              const classify = await createClassifyDB(
+                dataPrediction,
+                uid,
+                imagePath
+              );
               await axios.request({
                 method: "POST",
                 url: `${urlRequest}`,

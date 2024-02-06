@@ -33,10 +33,7 @@ const getUserFromUserId = async (uid: string) => {
   return await prisma.users.findFirst({
     where: {
       u_id: uid,
-    },
-    select: {
-      role: true,
-    },
+    }
   });
 };
 
@@ -73,6 +70,10 @@ const checkUsername = async (username : string) => {
       username : username
     }
   })
+}
+
+const createExpertWithEmailAndPassword = async (username : string, password : string) => {
+
 }
 
 export {

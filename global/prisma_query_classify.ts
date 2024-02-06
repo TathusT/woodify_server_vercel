@@ -124,6 +124,48 @@ const getClassifyAll = async (page : number, pageSize : number) => {
   return { data, total };
 }
 
+const getClassifyAllWithUserId = async (page : number, pageSize : number, uid : string, filter : any = null) => {
+  const skip = (page - 1) * pageSize;
+  const data = await prisma.classify.findMany({
+    skip,
+    take: pageSize,
+    where : {
+      create_by : uid,
+      ...filter
+    },
+    orderBy : {
+      create_at : 'desc'
+    }
+  });
+  const total = await prisma.classify.count({
+    where : {
+      create_by : uid,
+      ...filter
+    }
+  });
+  return { data, total };
+}
+
+const getClassifyAllFilter = async (page : number, pageSize : number, filter : any = null) => {
+  const skip = (page - 1) * pageSize;
+  const data = await prisma.classify.findMany({
+    skip,
+    take: pageSize,
+    where : {
+      ...filter
+    },
+    orderBy : {
+      create_at : 'desc'
+    }
+  });
+  const total = await prisma.classify.count({
+    where : {
+      ...filter
+    }
+  });
+  return { data, total };
+}
+
 const getPieChartStatusData = async () => {
   const counts = await prisma.classify.groupBy({
     by: ['status_verify'],
@@ -144,6 +186,22 @@ const getClassifyWithDay = async () => {
         gte: today,
         lt: new Date(today.getTime() + 24 * 60 * 60 * 1000),
       },
+    },
+  });
+
+  return result;
+};
+
+const getClassifyWithDayWithUserId = async (u_id : string) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const result = await prisma.classify.count({
+    where: {
+      create_at: {
+        gte: today,
+        lt: new Date(today.getTime() + 24 * 60 * 60 * 1000),
+      },
+      create_by : u_id
     },
   });
 
@@ -171,6 +229,16 @@ const getClassifyWithWaitForVerify = async () => {
   const result = await prisma.classify.count({
     where: {
       status_verify: "WAITING_FOR_VERIFICATION",
+    },
+  });
+  return result;
+};
+
+const getClassifyWithWaitForVerifyWithUserId = async (u_id : string) => {
+  const result = await prisma.classify.count({
+    where: {
+      status_verify: "WAITING_FOR_VERIFICATION",
+      create_by : u_id
     },
   });
   return result;
@@ -216,6 +284,41 @@ const updateClassify = async (c_id: string, location: string) => {
   });
 };
 
+const getClassifyByUserIdDonutChart = async (uid :string, filter : any = null) => {
+  const classifyData = await prisma.classify.groupBy({
+    by: ["select_result"],
+    where: {
+      create_by: uid,
+      ...filter
+    },
+    _count: {
+      _all: true,
+    },
+  });
+
+  return classifyData.map((group) => ({
+    wood_name: group.select_result,
+    amount: group._count._all,
+  }));
+}
+
+const getClassifyStatusByUserIdDonutChart = async (uid :string) => {
+  const classifyData = await prisma.classify.groupBy({
+    by: ["status_verify"],
+    where: {
+      create_by: uid
+    },
+    _count: {
+      _all: true,
+    },
+  });
+
+  return classifyData.map((group) => ({
+    status: group.status_verify == 'WAITING_FOR_VERIFICATION' ? 'รอการรับรอง' : group.status_verify == 'FAILED_CERTIFICATION' ? 'ไม่ผ่าน' : 'ผ่าน',
+    amount: group._count._all,
+  }));
+}
+
 export {
   getClassifyCountByWood,
   getClassifyWithDate,
@@ -228,5 +331,11 @@ export {
   getClassifyToday,
   getClassifyWithVerify,
   getClassifyAll,
-  getPieChartStatusData
+  getPieChartStatusData,
+  getClassifyWithDayWithUserId,
+  getClassifyWithWaitForVerifyWithUserId,
+  getClassifyByUserIdDonutChart,
+  getClassifyStatusByUserIdDonutChart,
+  getClassifyAllWithUserId,
+  getClassifyAllFilter
 };

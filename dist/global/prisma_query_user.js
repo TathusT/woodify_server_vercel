@@ -44,10 +44,7 @@ const getUserFromUserId = (uid) => __awaiter(void 0, void 0, void 0, function* (
     return yield prisma_1.prisma.users.findFirst({
         where: {
             u_id: uid,
-        },
-        select: {
-            role: true,
-        },
+        }
     });
 });
 exports.getUserFromUserId = getUserFromUserId;
@@ -86,4 +83,6 @@ const checkUsername = (username) => __awaiter(void 0, void 0, void 0, function* 
     });
 });
 exports.checkUsername = checkUsername;
+const createExpertWithEmailAndPassword = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
+});
 //# sourceMappingURL=prisma_query_user.js.map

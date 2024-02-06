@@ -1,6 +1,7 @@
 import express from 'express';
 import { Router } from 'express';
 import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, checkUsername } from '../global/prisma_query_user';
+import { decryptAccessToken } from '../global/token_manager';
 const nodemailer = require("nodemailer");
 require('dotenv').config();
 
@@ -9,8 +10,8 @@ const router: Router = express.Router();
 router.get("/user/:u_id",async (req, res) => {
     const u_id = req.params.u_id;
     try {
-      const classify = await getUserFromUserId(u_id);
-      res.status(200).json(classify);
+      const user = await getUserFromUserId(u_id);
+      res.status(200).json(user);
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
@@ -29,6 +30,18 @@ router.get("/user_today",async (req, res) => {
   try {
     const users = await getUserToday();
     res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
+router.post('/user_with_token', async (req, res) => {
+  try {
+    const data = req.body;
+    const token = data.token;
+    const u_id = await decryptAccessToken(token);
+    const user =  await getUserFromUserId(u_id.id);
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -111,6 +124,7 @@ router.post("/send_email", async function (req, res, next) {
       if (error) {
         console.log(error);
       } else {
+        
         res.json({status : 200, message : "send success"});
       }
     });

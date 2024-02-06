@@ -59,117 +59,191 @@ router.post("/webhook", (req, res) => __awaiter(void 0, void 0, void 0, function
 const createWoodCarousel = (uid) => __awaiter(void 0, void 0, void 0, function* () {
     const objectBubble = [];
     const dataWood = yield (0, prisma_query_wood_1.getWoodInfo)();
+    const max = 5;
+    let more = false;
     let urlRequest;
-    const objectsPerGroup = 12;
-    const groupedData = Array.from({ length: Math.ceil(dataWood.length / objectsPerGroup) }, (_, index) => {
-        const start = index * objectsPerGroup;
-        const end = start + objectsPerGroup;
-        return dataWood.slice(start, end);
-    });
-    groupedData.forEach((group) => {
-        const groupObjects = group.map((wood) => {
-            var _a;
-            return ({
-                type: "bubble",
-                hero: {
-                    type: "image",
-                    url: `${process.env.PATH_BACKEND}${(_a = wood.wood_image[0]) === null || _a === void 0 ? void 0 : _a.path}`,
-                    size: "full",
-                    aspectRatio: "20:13",
-                    aspectMode: "cover",
-                    action: {
-                        type: "uri",
-                        uri: `${process.env.PATH_FRONT}/line/wood_detail/${wood.w_id}`,
-                    },
+    let sliceWood;
+    if (dataWood.length > max) {
+        sliceWood = dataWood.slice(0, max);
+        more = true;
+    }
+    sliceWood.forEach((wood) => {
+        var _a;
+        objectBubble.push({
+            type: "bubble",
+            hero: {
+                type: "image",
+                url: `${process.env.PATH_BACKEND}${(_a = wood.wood_image[0]) === null || _a === void 0 ? void 0 : _a.path}`,
+                size: "full",
+                aspectRatio: "20:13",
+                aspectMode: "cover",
+                action: {
+                    type: "uri",
+                    uri: `${process.env.PATH_FRONT}/line/wood_detail/${wood.w_id}`,
                 },
-                body: {
-                    type: "box",
-                    layout: "vertical",
-                    contents: [
-                        {
-                            type: "text",
-                            text: `${wood.common_name}`,
-                            weight: "bold",
-                            size: "xl",
-                        },
-                        {
-                            type: "box",
-                            layout: "vertical",
-                            margin: "lg",
-                            spacing: "sm",
-                            contents: [
-                                {
-                                    type: "box",
-                                    layout: "baseline",
-                                    spacing: "sm",
-                                    contents: [
-                                        {
-                                            type: "text",
-                                            text: `${wood.place_of_origin.length > 100
-                                                ? wood.place_of_origin.slice(0, 97) + "..."
-                                                : wood.place_of_origin}`,
-                                            wrap: true,
-                                            color: "#666666",
-                                            size: "sm",
-                                            flex: 5,
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                    ],
-                },
-                footer: {
-                    type: "box",
-                    layout: "vertical",
-                    spacing: "sm",
-                    contents: [
-                        {
-                            type: "button",
-                            style: "primary",
-                            height: "sm",
-                            action: {
-                                type: "uri",
-                                label: "ดูรายละเอียด",
-                                uri: `${process.env.PATH_FRONT}/line/wood_detail/${wood.w_id}`,
-                            },
-                        },
-                    ],
-                    flex: 0,
-                },
-            });
-        });
-        objectBubble.push(groupObjects);
-    });
-    for (const value of objectBubble) {
-        urlRequest = `https://api.line.me/v2/bot/message/push`;
-        yield axios_1.default.request({
-            method: "POST",
-            url: `${urlRequest}`,
-            headers: {
-                Authorization: `Bearer ` + line_config_1.lineConfig.channelAccessToken,
-                "Content-Type": "application/json",
             },
-            data: {
-                to: uid,
-                messages: [
+            body: {
+                type: "box",
+                layout: "vertical",
+                contents: [
                     {
-                        type: "flex",
-                        altText: "This is a Flex Message",
-                        contents: {
-                            type: "carousel",
-                            contents: value,
-                        },
+                        type: "text",
+                        text: `${wood.common_name}`,
+                        weight: "bold",
+                        size: "xl",
+                    },
+                    {
+                        type: "box",
+                        layout: "vertical",
+                        margin: "lg",
+                        spacing: "sm",
+                        contents: [
+                            {
+                                type: "box",
+                                layout: "baseline",
+                                spacing: "sm",
+                                contents: [
+                                    {
+                                        type: "text",
+                                        text: `${wood.place_of_origin.length > 100
+                                            ? wood.place_of_origin.slice(0, 97) + "..."
+                                            : wood.place_of_origin}`,
+                                        wrap: true,
+                                        color: "#666666",
+                                        size: "sm",
+                                        flex: 5,
+                                    },
+                                ],
+                            },
+                        ],
                     },
                 ],
             },
+            footer: {
+                type: "box",
+                layout: "vertical",
+                spacing: "sm",
+                contents: [
+                    {
+                        type: "button",
+                        style: "primary",
+                        height: "sm",
+                        action: {
+                            type: "uri",
+                            label: "ดูรายละเอียด",
+                            uri: `${process.env.PATH_FRONT}/line/wood_detail/${wood.w_id}`,
+                        },
+                    },
+                ],
+                flex: 0,
+            },
+        });
+    });
+    if (more) {
+        objectBubble.push({
+            type: "bubble",
+            hero: {
+                type: "image",
+                url: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ4IuDW4CkzB5rwYtOm_YuCZmnDVPdi8IZMQ&usqp=CAU`,
+                size: "full",
+                aspectRatio: "20:13",
+                aspectMode: "cover",
+                action: {
+                    type: "uri",
+                    uri: `${process.env.PATH_FRONT}/line/information_wood`,
+                },
+            },
+            body: {
+                type: "box",
+                layout: "vertical",
+                contents: [
+                    {
+                        type: "text",
+                        text: `ดูต้นไม้ทั้งหมด`,
+                        weight: "bold",
+                        size: "xl",
+                    },
+                    {
+                        type: "box",
+                        layout: "vertical",
+                        margin: "lg",
+                        spacing: "sm",
+                        contents: [
+                            {
+                                type: "box",
+                                layout: "baseline",
+                                spacing: "sm",
+                                contents: [
+                                    {
+                                        type: "text",
+                                        text: `กดดูรายละเอียดเพิ่มเติมเพื่อดูต้นไม้ทั้งหมด`,
+                                        wrap: true,
+                                        color: "#666666",
+                                        size: "sm",
+                                        flex: 5,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+            footer: {
+                type: "box",
+                layout: "vertical",
+                spacing: "sm",
+                contents: [
+                    {
+                        type: "button",
+                        style: "primary",
+                        height: "sm",
+                        action: {
+                            type: "uri",
+                            label: "ดูรายละเอียดทั้งหมด",
+                            uri: `${process.env.PATH_FRONT}/line/information_wood`,
+                        },
+                    },
+                ],
+                flex: 0,
+            },
         });
     }
+    urlRequest = `https://api.line.me/v2/bot/message/push`;
+    yield axios_1.default.request({
+        method: "POST",
+        url: `${urlRequest}`,
+        headers: {
+            Authorization: `Bearer ` + line_config_1.lineConfig.channelAccessToken,
+            "Content-Type": "application/json",
+        },
+        data: {
+            to: uid,
+            messages: [
+                {
+                    type: "flex",
+                    altText: "This is a Flex Message",
+                    contents: {
+                        type: "carousel",
+                        contents: objectBubble,
+                    },
+                },
+            ],
+        },
+    });
 });
 const createManualCarousel = (uid) => __awaiter(void 0, void 0, void 0, function* () {
     let objectBubble = [];
+    let sliceManual;
+    let more = false;
+    let max = 12;
     const dataManual = yield prisma_1.prisma.manual.findMany();
-    dataManual.forEach((manual) => {
+    if (dataManual.length > max) {
+        sliceManual = dataManual.slice(0, max);
+    }
+    else {
+        sliceManual = dataManual;
+    }
+    sliceManual.forEach((manual) => {
         objectBubble.push({
             type: "bubble",
             hero: {
@@ -221,6 +295,75 @@ const createManualCarousel = (uid) => __awaiter(void 0, void 0, void 0, function
             },
         });
     });
+    if (more) {
+        objectBubble.push({
+            type: "bubble",
+            hero: {
+                type: "image",
+                url: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ4IuDW4CkzB5rwYtOm_YuCZmnDVPdi8IZMQ&usqp=CAU`,
+                size: "full",
+                aspectRatio: "20:13",
+                aspectMode: "cover",
+                action: {
+                    type: "uri",
+                    uri: `${process.env.PATH_FRONT}/line/information_wood`,
+                },
+            },
+            body: {
+                type: "box",
+                layout: "vertical",
+                contents: [
+                    {
+                        type: "text",
+                        text: `ดูคู่มือทั้งหมด`,
+                        weight: "bold",
+                        size: "xl",
+                    },
+                    {
+                        type: "box",
+                        layout: "vertical",
+                        margin: "lg",
+                        spacing: "sm",
+                        contents: [
+                            {
+                                type: "box",
+                                layout: "baseline",
+                                spacing: "sm",
+                                contents: [
+                                    {
+                                        type: "text",
+                                        text: `กดดูรายละเอียดเพิ่มเติมเพื่อดูคู่มือทั้งหมด`,
+                                        wrap: true,
+                                        color: "#666666",
+                                        size: "sm",
+                                        flex: 5,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+            footer: {
+                type: "box",
+                layout: "vertical",
+                spacing: "sm",
+                contents: [
+                    {
+                        type: "button",
+                        style: "primary",
+                        height: "sm",
+                        action: {
+                            type: "uri",
+                            label: "ดูรายละเอียดทั้งหมด",
+                            uri: `${process.env.PATH_FRONT}/line/information_wood`,
+                        },
+                    },
+                ],
+                flex: 0,
+            },
+        });
+    }
     const urlRequest = "https://api.line.me/v2/bot/message/push";
     try {
         const response = yield axios_1.default.post(urlRequest, {

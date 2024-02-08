@@ -18,8 +18,6 @@ function main() {
                 line_id: "Ufa55aca331689734988b963e812d9865",
                 firstname: "tathus",
                 lastname: "theerachuwiwat",
-                username: "tathus",
-                password: "1234",
                 email: "tathuswork@gmail.com",
                 phone: "0945492954",
                 image: "https://cdn.discordapp.com/attachments/841948735419842580/1148478321814941696/IMG_1827.png?ex=656eaa49&is=655c3549&hm=de51c84082f665800c458e66104775e85de866dcaed4d8941d60f767a58c759e&",

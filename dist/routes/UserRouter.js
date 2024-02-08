@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const prisma_query_user_1 = require("../global/prisma_query_user");
 const token_manager_1 = require("../global/token_manager");
+const richmenu_1 = require("../global/richmenu");
+const prisma_query_addToken_1 = require("../global/prisma_query_addToken");
 const nodemailer = require("nodemailer");
 require('dotenv').config();
 const router = express_1.default.Router();
@@ -70,45 +72,56 @@ router.put("/update_role", (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
+router.put("/update_verify_data", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const user = yield (0, prisma_query_user_1.setUserData)(data);
+        if (user.verify_data == true) {
+            if (user.role == "EXPERT") {
+                yield (0, richmenu_1.afterLoginSuccessExpert)(user.line_id);
+            }
+            else if (user.role == 'USER') {
+                yield (0, richmenu_1.afterLoginSuccessUser)(user.line_id);
+            }
+            else if (user.role == 'ADMIN') {
+                yield (0, richmenu_1.afterLoginSuccessExpert)(user.line_id);
+            }
+        }
+        res.status(200).json({ message: "update_success" });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.post("/create_expert", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const user = yield (0, prisma_query_user_1.createExpert)(data);
+        const access_token = yield (0, token_manager_1.generateAccessToken)({ id: user.u_id });
+        res.status(200).json({ message: "create_success", data: user, access_token: access_token });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 router.post("/send_email", function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        let email = req.body.email;
+        const data = req.body;
+        const email = data.email;
+        const token = data.token;
+        const inviteBy = yield (0, token_manager_1.decryptAccessToken)(token);
         const checkEmail = yield (0, prisma_query_user_1.getUserWithEmail)(email);
         if (checkEmail != null) {
-            return res.json({ status: 200, message: 'email is taken' });
-        }
-        let chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let passwordLength = 8;
-        let password = "";
-        for (let i = 0; i <= passwordLength; i++) {
-            let randomNumber = Math.floor(Math.random() * chars.length);
-            password += chars.substring(randomNumber, randomNumber + 1);
-        }
-        let charsAdmin = '0123456789';
-        let accNumber = 8;
-        let genAcc = "";
-        while (true) {
-            genAcc = "";
-            for (let i = 0; i <= accNumber; i++) {
-                let randomNumberAcc = Math.floor(Math.random() * charsAdmin.length);
-                genAcc += chars.substring(randomNumberAcc, randomNumberAcc + 1);
-            }
-            const checkUser = yield (0, prisma_query_user_1.checkUsername)(`admin${genAcc}`);
-            if (checkUser == null) {
-                break;
-            }
-            else {
-                break;
+            if (checkEmail.role == 'EXPERT') {
+                return res.json({ status: 200, message: 'email is expert' });
             }
         }
         try {
+            const a_token = yield (0, prisma_query_addToken_1.addTokenInvited)(inviteBy.id, email);
             const output = `
               <p>You have a invite to expert user in Woodify</p>
               <h3>Link for register</h3>
-              <ul>
-                  <li>username : admin${parseInt(genAcc)}</li>
-                  <li>password : ${password}</li>
-              </ul>
+              <a href='${process.env.PATH_FRONT}/admin/signup/${a_token.a_id}'>Click here</a>
               `;
             var transporter = nodemailer.createTransport({
                 service: "gmail",

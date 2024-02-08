@@ -15,11 +15,10 @@ model Users{
   line_id String? @unique
   firstname String?
   lastname String?
-  username String? @unique
-  password String?
   email String? @unique
   phone String? @unique
   image String?
+  verify_data Boolean @default(false)
   role roleEnum @default(USER)
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
@@ -115,7 +114,7 @@ model Note{
 }
 
 model Add_Token {
-  n_id String @id @default(uuid())
+  a_id String @id @default(uuid())
   invited_by String
   invited_to String
   create_at DateTime @default(now())

@@ -56,13 +56,19 @@ router.post("/webhook", (req, res) => __awaiter(void 0, void 0, void 0, function
         res.status(500).end();
     }
 }));
-const createWoodCarousel = (uid) => __awaiter(void 0, void 0, void 0, function* () {
+const createWoodCarousel = (uid, event) => __awaiter(void 0, void 0, void 0, function* () {
     const objectBubble = [];
     const dataWood = yield (0, prisma_query_wood_1.getWoodInfo)();
     const max = 5;
     let more = false;
     let urlRequest;
     let sliceWood;
+    if (dataWood.length == 0 || dataWood == null) {
+        return client.replyMessage(event.replyToken, {
+            type: "text",
+            text: "ขณะนี้ยังไม่มีข้อมูลไม้",
+        });
+    }
     if (dataWood.length > max) {
         sliceWood = dataWood.slice(0, max);
         more = true;
@@ -231,12 +237,18 @@ const createWoodCarousel = (uid) => __awaiter(void 0, void 0, void 0, function* 
         },
     });
 });
-const createManualCarousel = (uid) => __awaiter(void 0, void 0, void 0, function* () {
+const createManualCarousel = (uid, event) => __awaiter(void 0, void 0, void 0, function* () {
     let objectBubble = [];
     let sliceManual;
     let more = false;
     let max = 12;
     const dataManual = yield prisma_1.prisma.manual.findMany();
+    if (dataManual.length == 0 || dataManual == null) {
+        return client.replyMessage(event.replyToken, {
+            type: "text",
+            text: "ขณะนี้ยังไม่มีข้อมูลคู่มือ",
+        });
+    }
     if (dataManual.length > max) {
         sliceManual = dataManual.slice(0, max);
     }
@@ -396,10 +408,10 @@ const createClassify = (uid, event) => __awaiter(void 0, void 0, void 0, functio
         let messageId = event.message.id;
         let urlRequestGetImage = `https://api-data.line.me/v2/bot/message/${messageId}/content`;
         let urlRequest = `https://api.line.me/v2/bot/message/push`;
-        // client.replyMessage(event.replyToken, {
-        //   type: "text",
-        //   text: "กำลังประมวลผลจากรูปภาพที่ส่งมา",
-        // });
+        client.pushMessage(uid, {
+            type: "text",
+            text: "กำลังประมวลผลจากรูปภาพที่ส่งมา",
+        });
         yield axios_1.default
             .request({
             method: "GET",
@@ -475,7 +487,7 @@ const createClassify = (uid, event) => __awaiter(void 0, void 0, void 0, functio
                                         },
                                         body: {
                                             type: "box",
-                                            layout: "vertical",
+                                            layout: "horizontal",
                                             contents: [
                                                 {
                                                     type: "text",
@@ -483,12 +495,16 @@ const createClassify = (uid, event) => __awaiter(void 0, void 0, void 0, functio
                                                     weight: "bold",
                                                     size: "xl",
                                                     align: "start",
+                                                    margin: "xs",
                                                 },
                                                 {
-                                                    type: "icon",
-                                                    url: `${process.env.PATH_BACKEND}/image/svg/passIcon.svg`,
-                                                    size: "xs"
-                                                }
+                                                    type: "image",
+                                                    url: `${process.env.PATH_BACKEND}/image/svg/passIcon.png`,
+                                                    size: "xxs",
+                                                    aspectRatio: "1:1",
+                                                    align: "start",
+                                                    margin: "xs",
+                                                },
                                             ],
                                         },
                                         footer: {
@@ -540,10 +556,10 @@ const lineEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         else if (message == "ข้อมูลพันธุ์ไม้") {
-            createWoodCarousel(uid);
+            createWoodCarousel(uid, event);
         }
         else if (message == "คู่มือ") {
-            createManualCarousel(uid);
+            createManualCarousel(uid, event);
         }
         else if (image) {
             createClassify(uid, event);

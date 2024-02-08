@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkUsername = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
+exports.createExpert = exports.setUserData = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
 const prisma_1 = require("./prisma");
 const getUserFromLineId = (lineid) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.findFirst({
@@ -75,14 +75,27 @@ const getCountExpert = () => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.getCountExpert = getCountExpert;
-const checkUsername = (username) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield prisma_1.prisma.users.count({
+const setUserData = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma_1.prisma.users.update({
         where: {
-            username: username
+            line_id: data.line_id,
+        },
+        data: {
+            firstname: data.firstname,
+            lastname: data.lastname,
+            phone: data.phone,
+            email: data.email,
+            verify_data: true
         }
     });
 });
-exports.checkUsername = checkUsername;
+exports.setUserData = setUserData;
+const createExpert = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma_1.prisma.users.create({
+        data: query
+    });
+});
+exports.createExpert = createExpert;
 const createExpertWithEmailAndPassword = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
 });
 //# sourceMappingURL=prisma_query_user.js.map

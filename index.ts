@@ -13,6 +13,7 @@ import AuthenRouter from "./routes/Authentication";
 import ManualRouter from "./routes/ManualRouter";
 import UserRouter from "./routes/UserRouter";
 import NoteRouter from "./routes/NoteRouter";
+import AddTokenRouter from './routes/AddTokenRouter'
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use(ManualRouter);
 app.use(ClassifyRouter);
 app.use(UserRouter);
 app.use(NoteRouter);
+app.use(AddTokenRouter);
 
 const port = process.env.PORT;
 const httpServer = createServer(app);

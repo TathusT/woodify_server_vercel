@@ -19,6 +19,7 @@ const Authentication_1 = __importDefault(require("./routes/Authentication"));
 const ManualRouter_1 = __importDefault(require("./routes/ManualRouter"));
 const UserRouter_1 = __importDefault(require("./routes/UserRouter"));
 const NoteRouter_1 = __importDefault(require("./routes/NoteRouter"));
+const AddTokenRouter_1 = __importDefault(require("./routes/AddTokenRouter"));
 dotenv_1.default.config();
 const rootDirectoryPath = path_1.default.join(__dirname);
 const app = (0, express_1.default)();
@@ -36,6 +37,7 @@ app.use(ManualRouter_1.default);
 app.use(ClassifyRouter_1.default);
 app.use(UserRouter_1.default);
 app.use(NoteRouter_1.default);
+app.use(AddTokenRouter_1.default);
 const port = process.env.PORT;
 const httpServer = (0, http_1.createServer)(app);
 const io = new socket_io_1.Server(httpServer, {

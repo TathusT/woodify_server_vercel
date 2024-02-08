@@ -64,11 +64,24 @@ const getCountExpert = async () => {
   })
 }
 
-const checkUsername = async (username : string) => {
-  return await prisma.users.count({
+const setUserData = async (data : any) => {
+  return await prisma.users.update({
     where : {
-      username : username
+      line_id : data.line_id,
+    },
+    data : {
+      firstname : data.firstname,
+      lastname : data.lastname,
+      phone : data.phone,
+      email : data.email,
+      verify_data : true
     }
+  })
+}
+
+const createExpert = async (query : any) => {
+  return await prisma.users.create({
+    data : query
   })
 }
 
@@ -84,5 +97,6 @@ export {
   getUserToday,
   getUserWithEmail,
   getCountExpert,
-  checkUsername
+  setUserData,
+  createExpert
 };

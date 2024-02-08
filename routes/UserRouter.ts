@@ -1,7 +1,9 @@
 import express from 'express';
 import { Router } from 'express';
-import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, checkUsername } from '../global/prisma_query_user';
-import { decryptAccessToken } from '../global/token_manager';
+import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, setUserData, createExpert} from '../global/prisma_query_user';
+import { decryptAccessToken, generateAccessToken } from '../global/token_manager';
+import { afterLoginSuccessExpert, afterLoginSuccessUser } from '../global/richmenu';
+import { addTokenInvited } from '../global/prisma_query_addToken';
 const nodemailer = require("nodemailer");
 require('dotenv').config();
 
@@ -61,48 +63,57 @@ router.put("/update_role",async (req, res) => {
   }
 })
 
+router.put("/update_verify_data",async (req, res) => {
+  try {
+    const data = req.body;
+    const user = await setUserData(data);
+    if(user.verify_data == true){
+      if(user.role == "EXPERT"){
+        await afterLoginSuccessExpert(user.line_id);
+      }
+      else if(user.role == 'USER'){
+        await afterLoginSuccessUser(user.line_id)
+      }
+      else if(user.role == 'ADMIN'){
+        await afterLoginSuccessExpert(user.line_id);
+      } 
+    }
+    res.status(200).json({ message: "update_success"});
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
+router.post("/create_expert",async (req, res) => {
+  try {
+    const data = req.body;
+    const user = await createExpert(data);
+    const access_token = await generateAccessToken({id : user.u_id})
+    res.status(200).json({ message: "create_success", data : user, access_token : access_token});
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
 
 router.post("/send_email", async function (req, res, next) {
-  let email = req.body.email;
-
+  const data = req.body
+  const email = data.email;
+  const token = data.token;
+  const inviteBy = await decryptAccessToken(token)
   const checkEmail : any = await getUserWithEmail(email);
   if(checkEmail != null){
-    return res.json({status : 200, message : 'email is taken'});
-  }
-  let chars =
-    "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let passwordLength = 8;
-  let password = "";
-  for (let i = 0; i <= passwordLength; i++) {
-    let randomNumber = Math.floor(Math.random() * chars.length);
-    password += chars.substring(randomNumber, randomNumber + 1);
+    if(checkEmail.role == 'EXPERT'){
+      return res.json({status : 200, message : 'email is expert'});
+    }
   }
 
-  let charsAdmin = '0123456789'
-  let accNumber = 8;
-  let genAcc = ""
-  while (true) {
-    genAcc = ""
-    for (let i = 0; i <= accNumber; i++) {
-      let randomNumberAcc = Math.floor(Math.random() * charsAdmin.length);
-      genAcc += chars.substring(randomNumberAcc, randomNumberAcc + 1);
-    }
-    const checkUser = await checkUsername(`admin${genAcc}`)
-    if(checkUser == null){
-      break;
-    }
-    else{
-      break;
-    }
-  }
   try {
+    const a_token = await addTokenInvited(inviteBy.id, email);
     const output = `
               <p>You have a invite to expert user in Woodify</p>
               <h3>Link for register</h3>
-              <ul>
-                  <li>username : admin${parseInt(genAcc)}</li>
-                  <li>password : ${password}</li>
-              </ul>
+              <a href='${process.env.PATH_FRONT}/admin/signup/${a_token.a_id}'>Click here</a>
               `;
     var transporter = nodemailer.createTransport({
       service : "gmail",

@@ -23,13 +23,21 @@ router.post("/webhook", async (req, res) => {
   }
 });
 
-const createWoodCarousel = async (uid: string) => {
+const createWoodCarousel = async (uid: string, event : any) => {
   const objectBubble: any = [];
   const dataWood = await getWoodInfo();
   const max = 5;
   let more = false;
   let urlRequest;
   let sliceWood;
+
+  if(dataWood.length == 0 || dataWood == null){
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "ขณะนี้ยังไม่มีข้อมูลไม้",
+    });
+  }
+
   if (dataWood.length > max) {
     sliceWood = dataWood.slice(0, max);
     more = true;
@@ -202,12 +210,19 @@ const createWoodCarousel = async (uid: string) => {
   });
 };
 
-const createManualCarousel = async (uid: string) => {
+const createManualCarousel = async (uid: string, event : any) => {
   let objectBubble: any = [];
   let sliceManual;
   let more = false;
   let max = 12;
   const dataManual = await prisma.manual.findMany();
+
+  if(dataManual.length == 0 || dataManual == null){
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "ขณะนี้ยังไม่มีข้อมูลคู่มือ",
+    });
+  }
 
   if (dataManual.length > max) {
     sliceManual = dataManual.slice(0, max);
@@ -376,10 +391,10 @@ const createClassify = async (uid: string, event: any) => {
     let messageId = event.message.id;
     let urlRequestGetImage = `https://api-data.line.me/v2/bot/message/${messageId}/content`;
     let urlRequest = `https://api.line.me/v2/bot/message/push`;
-    // client.replyMessage(event.replyToken, {
-    //   type: "text",
-    //   text: "กำลังประมวลผลจากรูปภาพที่ส่งมา",
-    // });
+    client.pushMessage(uid, {
+      type: "text",
+      text: "กำลังประมวลผลจากรูปภาพที่ส่งมา",
+    });
     await axios
       .request({
         method: "GET",
@@ -406,7 +421,6 @@ const createClassify = async (uid: string, event: any) => {
               (a: any, b: any) => b.percentage - a.percentage
             );
             console.log(dataPrediction);
-
             if (dataPrediction.prediction[0].percentage < 50) {
               try {
                 client.replyMessage(event.replyToken, {
@@ -463,7 +477,7 @@ const createClassify = async (uid: string, event: any) => {
                         },
                         body: {
                           type: "box",
-                          layout: "vertical",
+                          layout: "horizontal",
                           contents: [
                             {
                               type: "text",
@@ -471,12 +485,16 @@ const createClassify = async (uid: string, event: any) => {
                               weight: "bold",
                               size: "xl",
                               align: "start",
+                              margin: "xs", 
                             },
                             {
-                              type: "icon",
-                              url:  `${process.env.PATH_BACKEND}/image/svg/passIcon.svg`,
-                              size: "xs"
-                            }
+                              type: "image",
+                              url: `${process.env.PATH_BACKEND}/image/svg/passIcon.png`,
+                              size: "xxs",
+                              aspectRatio: "1:1",
+                              align: "start",
+                              margin: "xs", 
+                            },
                           ],
                         },
                         footer: {
@@ -527,9 +545,9 @@ const lineEvent = async (event: any) => {
         text: "กรุณาอัปโหลดรูปหรือถ่ายภาพเพื่อใช้ในการตรวจสอบ",
       });
     } else if (message == "ข้อมูลพันธุ์ไม้") {
-      createWoodCarousel(uid);
+      createWoodCarousel(uid, event);
     } else if (message == "คู่มือ") {
-      createManualCarousel(uid);
+      createManualCarousel(uid, event);
     } else if (image) {
       createClassify(uid, event);
     }

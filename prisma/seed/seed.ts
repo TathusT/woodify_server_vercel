@@ -7,8 +7,6 @@ async function main() {
       line_id: "Ufa55aca331689734988b963e812d9865",
       firstname: "tathus",
       lastname: "theerachuwiwat",
-      username : "tathus",
-      password : "1234",
       email: "tathuswork@gmail.com",
       phone: "0945492954",
       image:

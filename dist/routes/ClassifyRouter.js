@@ -109,6 +109,7 @@ router.post("/classify_user_id", (req, res) => __awaiter(void 0, void 0, void 0,
         const page = data.currentPage;
         const pageSize = data.pageSize;
         const uid = data.u_id;
+        console.log(uid);
         const filter = data.filter;
         const classify = yield (0, prisma_query_classify_1.getClassifyAllWithUserId)(parseInt(page), parseInt(pageSize), uid, filter);
         res.status(200).json(classify);

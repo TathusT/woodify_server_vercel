@@ -124,27 +124,34 @@ const getClassifyAll = async (page : number, pageSize : number) => {
   return { data, total };
 }
 
-const getClassifyAllWithUserId = async (page : number, pageSize : number, uid : string, filter : any = null) => {
+const getClassifyAllWithUserId = async (page: number, pageSize: number, uid : string, filter: any = null) => {
   const skip = (page - 1) * pageSize;
+
   const data = await prisma.classify.findMany({
-    skip,
-    take: pageSize,
-    where : {
-      create_by : uid,
-      ...filter
-    },
-    orderBy : {
-      create_at : 'desc'
-    }
+      skip,
+      take: pageSize,
+      where: {
+        create_by : uid,
+          ...filter
+      },
+      orderBy: {
+          create_at: 'desc'
+      },
+      include: {
+          notes: true,
+          creator : true
+      }
   });
+
   const total = await prisma.classify.count({
-    where : {
-      create_by : uid,
-      ...filter
-    }
+      where: {
+          ...filter
+      }
   });
+
   return { data, total };
-}
+};
+
 
 const getClassifyAllFilter = async (page : number, pageSize : number, filter : any = null) => {
   const skip = (page - 1) * pageSize;
@@ -156,7 +163,7 @@ const getClassifyAllFilter = async (page : number, pageSize : number, filter : a
     },
     orderBy : {
       create_at : 'desc'
-    }
+    },
   });
   const total = await prisma.classify.count({
     where : {

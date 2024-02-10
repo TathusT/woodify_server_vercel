@@ -128,10 +128,14 @@ const getClassifyAllWithUserId = (page, pageSize, uid, filter = null) => __await
         where: Object.assign({ create_by: uid }, filter),
         orderBy: {
             create_at: 'desc'
+        },
+        include: {
+            notes: true,
+            creator: true
         }
     });
     const total = yield prisma_1.prisma.classify.count({
-        where: Object.assign({ create_by: uid }, filter)
+        where: Object.assign({}, filter)
     });
     return { data, total };
 });
@@ -144,7 +148,7 @@ const getClassifyAllFilter = (page, pageSize, filter = null) => __awaiter(void 0
         where: Object.assign({}, filter),
         orderBy: {
             create_at: 'desc'
-        }
+        },
     });
     const total = yield prisma_1.prisma.classify.count({
         where: Object.assign({}, filter)

@@ -119,6 +119,8 @@ router.post("/classify_user_id",async (req, res) => {
     const page = data.currentPage;
     const pageSize = data.pageSize
     const uid = data.u_id;
+    console.log(uid);
+    
     const filter = data.filter;
     const classify = await getClassifyAllWithUserId(parseInt(page), parseInt(pageSize), uid, filter);
     res.status(200).json(classify);

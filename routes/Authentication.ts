@@ -67,7 +67,7 @@ router.post("/liff/login", async (req, res) => {
 
 router.post("/admin/login", async (req, res) => {
   const data = req.body;
-  const user: any = await verifyLogin({line_id : data.line_id});
+  const user: any = await verifyLogin({line_id : data.lineProfile.userId});
   if (user.length != 0) {
     if(user[0].role == "EXPERT"){
       const accessToken = await generateAccessToken({ id: user[0].u_id });

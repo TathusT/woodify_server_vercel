@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { addNote } from "./prisma_query_note";
 import { getUserFromLineId } from "./prisma_query_user";
 import cuid from "cuid";
 
@@ -326,6 +327,22 @@ const getClassifyStatusByUserIdDonutChart = async (uid :string) => {
   }));
 }
 
+const updateStatusVerify = async (cid : string, uid : string, status : any, description : string) => {
+  const classify = await prisma.classify.update({
+    where : {
+      c_id : cid
+    },
+    data : {
+      verify_by : uid,
+      status_verify : status
+    }
+  })
+
+  if(classify){
+    await addNote(description, cid, uid);
+  }
+}
+
 export {
   getClassifyCountByWood,
   getClassifyWithDate,
@@ -344,5 +361,6 @@ export {
   getClassifyByUserIdDonutChart,
   getClassifyStatusByUserIdDonutChart,
   getClassifyAllWithUserId,
-  getClassifyAllFilter
+  getClassifyAllFilter,
+  updateStatusVerify
 };

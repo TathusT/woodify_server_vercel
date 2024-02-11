@@ -17,7 +17,8 @@ import {
   getClassifyByUserIdDonutChart,
   getClassifyStatusByUserIdDonutChart,
   getClassifyAllWithUserId,
-  getClassifyAllFilter
+  getClassifyAllFilter,
+  updateStatusVerify
 } from "../global/prisma_query_classify";
 import { decryptAccessToken } from "../global/token_manager";
 require("dotenv").config();
@@ -188,6 +189,16 @@ router.get('/classify_status_donut_with_userid/:u_id',async (req, res) => {
   const u_id = req.params.u_id
   const data = await getClassifyStatusByUserIdDonutChart(u_id);
   res.status(200).json(data)
+})
+
+router.post('/verify_status_classify',async (req, res) => {
+  const data = req.body
+  const u_id = data.u_id
+  const c_id = data.c_id
+  const description = data.description;
+  const status = data.status
+  const classify = updateStatusVerify(c_id, u_id, status, description)
+  res.status(200).json({message : "verify success", data : classify})
 })
 
 

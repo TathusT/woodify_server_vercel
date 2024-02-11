@@ -44,5 +44,18 @@ router.post("/note", (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
+router.post("/read_message", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const c_id = data.c_id;
+        const token = data.token;
+        const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
+        const note = yield (0, prisma_query_note_1.readMessage)(u_id.id, c_id);
+        res.status(200).json({ message: "read", data: note });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 exports.default = router;
 //# sourceMappingURL=NoteRouter.js.map

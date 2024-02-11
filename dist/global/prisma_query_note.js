@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9,12 +32,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNoteFromCid = exports.addNote = void 0;
+exports.readMessage = exports.getNoteFromCid = exports.addNote = void 0;
 const prisma_1 = require("./prisma");
+const line = __importStar(require("@line/bot-sdk"));
+const line_config_1 = require("../global/line/line_config");
+const client = new line.Client(line_config_1.lineConfig);
 const getNoteFromCid = (c_id) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.note.findMany({
         where: {
             c_id: c_id,
+        },
+        orderBy: {
+            create_at: "asc"
         },
         include: {
             creator: {
@@ -35,6 +64,14 @@ const addNote = (description, c_id, u_id) => __awaiter(void 0, void 0, void 0, f
             create_by: u_id,
         },
     });
+    const classify = yield prisma_1.prisma.classify.findFirst({
+        where: {
+            c_id: c_id,
+        },
+        include: {
+            creator: true
+        }
+    });
     // ดึงข้อมูลล่าสุดที่เพิ่มเข้าไป
     const fullNote = yield prisma_1.prisma.note.findFirst({
         where: {
@@ -49,7 +86,29 @@ const addNote = (description, c_id, u_id) => __awaiter(void 0, void 0, void 0, f
             },
         },
     });
+    if (true) {
+        client.pushMessage(classify.creator.line_id, {
+            type: "text",
+            text: "มีการตอบกลับจากผู้เชี่ยวชาญ",
+        });
+    }
     return fullNote;
 });
 exports.addNote = addNote;
+const readMessage = (uid, cid) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(uid, cid);
+    const read = yield prisma_1.prisma.note.updateMany({
+        where: {
+            NOT: {
+                create_by: uid,
+            },
+            c_id: cid,
+        },
+        data: {
+            read_status: true,
+        },
+    });
+    return read;
+});
+exports.readMessage = readMessage;
 //# sourceMappingURL=prisma_query_note.js.map

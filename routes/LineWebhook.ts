@@ -26,7 +26,7 @@ router.post("/webhook", async (req, res) => {
 const createWoodCarousel = async (uid: string, event : any) => {
   const objectBubble: any = [];
   const dataWood = await getWoodInfo();
-  const max = 5;
+  const max = 11;
   let more = false;
   let urlRequest;
   let sliceWood;
@@ -42,6 +42,10 @@ const createWoodCarousel = async (uid: string, event : any) => {
     sliceWood = dataWood.slice(0, max);
     more = true;
   }
+  else{
+    sliceWood = dataWood
+  }
+
   sliceWood.forEach((wood) => {
     objectBubble.push({
       type: "bubble",

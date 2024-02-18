@@ -343,6 +343,21 @@ const updateStatusVerify = async (cid : string, uid : string, status : any, desc
   }
 }
 
+
+const updateSelectResult = async (cid : string, uid : string, result : string) => {
+  const classify = await prisma.classify.update({
+    where : {
+      c_id : cid
+    },
+    data : {
+      select_result : result,
+      verify_by : uid
+    }
+  })
+}
+
+
+
 export {
   getClassifyCountByWood,
   getClassifyWithDate,
@@ -362,5 +377,6 @@ export {
   getClassifyStatusByUserIdDonutChart,
   getClassifyAllWithUserId,
   getClassifyAllFilter,
-  updateStatusVerify
+  updateStatusVerify,
+  updateSelectResult
 };

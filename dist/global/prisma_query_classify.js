@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateStatusVerify = exports.getClassifyAllFilter = exports.getClassifyAllWithUserId = exports.getClassifyStatusByUserIdDonutChart = exports.getClassifyByUserIdDonutChart = exports.getClassifyWithWaitForVerifyWithUserId = exports.getClassifyWithDayWithUserId = exports.getPieChartStatusData = exports.getClassifyAll = exports.getClassifyWithVerify = exports.getClassifyToday = exports.updateClassify = exports.createClassifyDB = exports.getClassifyById = exports.getClassifyWithWaitForVerify = exports.getClassifyWithAll = exports.getClassifyWithDay = exports.getClassifyWithDate = exports.getClassifyCountByWood = void 0;
+exports.updateSelectResult = exports.updateStatusVerify = exports.getClassifyAllFilter = exports.getClassifyAllWithUserId = exports.getClassifyStatusByUserIdDonutChart = exports.getClassifyByUserIdDonutChart = exports.getClassifyWithWaitForVerifyWithUserId = exports.getClassifyWithDayWithUserId = exports.getPieChartStatusData = exports.getClassifyAll = exports.getClassifyWithVerify = exports.getClassifyToday = exports.updateClassify = exports.createClassifyDB = exports.getClassifyById = exports.getClassifyWithWaitForVerify = exports.getClassifyWithAll = exports.getClassifyWithDay = exports.getClassifyWithDate = exports.getClassifyCountByWood = void 0;
 const prisma_1 = require("./prisma");
 const prisma_query_note_1 = require("./prisma_query_note");
 const prisma_query_user_1 = require("./prisma_query_user");
@@ -313,4 +313,16 @@ const updateStatusVerify = (cid, uid, status, description) => __awaiter(void 0, 
     }
 });
 exports.updateStatusVerify = updateStatusVerify;
+const updateSelectResult = (cid, uid, result) => __awaiter(void 0, void 0, void 0, function* () {
+    const classify = yield prisma_1.prisma.classify.update({
+        where: {
+            c_id: cid
+        },
+        data: {
+            select_result: result,
+            verify_by: uid
+        }
+    });
+});
+exports.updateSelectResult = updateSelectResult;
 //# sourceMappingURL=prisma_query_classify.js.map

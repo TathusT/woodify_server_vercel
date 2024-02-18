@@ -177,5 +177,13 @@ router.post('/verify_status_classify', (req, res) => __awaiter(void 0, void 0, v
     const classify = (0, prisma_query_classify_1.updateStatusVerify)(c_id, u_id, status, description);
     res.status(200).json({ message: "verify success", data: classify });
 }));
+router.put('/update_select_result', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = req.body;
+    const u_id = data.u_id;
+    const c_id = data.c_id;
+    const result = data.result;
+    const classify = (0, prisma_query_classify_1.updateSelectResult)(c_id, u_id, result);
+    res.status(200).json({ message: "update success", data: classify });
+}));
 exports.default = router;
 //# sourceMappingURL=ClassifyRouter.js.map

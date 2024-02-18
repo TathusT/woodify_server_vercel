@@ -18,7 +18,8 @@ import {
   getClassifyStatusByUserIdDonutChart,
   getClassifyAllWithUserId,
   getClassifyAllFilter,
-  updateStatusVerify
+  updateStatusVerify,
+  updateSelectResult
 } from "../global/prisma_query_classify";
 import { decryptAccessToken } from "../global/token_manager";
 require("dotenv").config();
@@ -200,6 +201,17 @@ router.post('/verify_status_classify',async (req, res) => {
   const classify = updateStatusVerify(c_id, u_id, status, description)
   res.status(200).json({message : "verify success", data : classify})
 })
+
+router.put('/update_select_result',async (req, res) => {
+  const data = req.body
+  const u_id = data.u_id
+  const c_id = data.c_id
+  const result = data.result;
+  const classify = updateSelectResult(c_id, u_id, result)
+  res.status(200).json({message : "update success", data : classify})
+})
+
+
 
 
 export default router;

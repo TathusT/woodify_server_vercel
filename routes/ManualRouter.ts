@@ -56,7 +56,7 @@ router.post("/edit_manual_noupdateImage", async (req, res) => {
     const data = req.body;
     const topic = data.title;
     const description = data.body;
-    const status = data.status == "true" ? true : false;
+    const status = data.status == true ? true : false;
     const token = data.token;
     const u_id = await decryptAccessToken(token);
     const id = data.id;
@@ -72,7 +72,7 @@ router.post("/edit_manual_updateImage", upload.single("image"), async (req, res)
       const data = req.body;
       const topic = data.title;
       const description = data.body;
-      const status = data.status == "true" ? true : false;
+      const status = data.status == true ? true : false;
       const token = data.token;
       const u_id = await decryptAccessToken(token);
       const id = data.id;
@@ -102,13 +102,13 @@ router.get("/manual/:id", async (req, res) => {
   }
 });
 
-router.delete('/manual_delete', async (req, res) =>{
+router.post('/manual_delete', async (req, res) =>{
     try {
       const data = req.body;
       const token = data.token;
-      const w_id = data.id
+      const m_id = data.m_id
       const u_id = await decryptAccessToken(token);
-      await deleteManual(w_id, u_id.id)
+      await deleteManual(m_id, u_id.id)
       res.status(200).json({ message: "delete success" });
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });

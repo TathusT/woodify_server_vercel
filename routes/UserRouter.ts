@@ -1,6 +1,6 @@
 import express from 'express';
 import { Router } from 'express';
-import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, setUserData, createExpert} from '../global/prisma_query_user';
+import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, setUserData, createExpert, deleteUser} from '../global/prisma_query_user';
 import { decryptAccessToken, generateAccessToken } from '../global/token_manager';
 import { afterLoginSuccessExpert, afterLoginSuccessUser } from '../global/richmenu';
 import { addTokenInvited } from '../global/prisma_query_addToken';
@@ -143,5 +143,15 @@ router.post("/send_email", async function (req, res, next) {
     return next(error);
   }
 });
+
+router.post("/delete_user",async (req, res) => {
+  try {
+    const data = req.body;
+    const user = await deleteUser(data.u_id);
+    res.status(200).json({ message: "delete success"});
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
 
 export default router;

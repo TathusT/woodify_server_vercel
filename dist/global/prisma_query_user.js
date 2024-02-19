@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createExpert = exports.setUserData = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
+exports.banUser = exports.deleteUser = exports.createExpert = exports.setUserData = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
 const prisma_1 = require("./prisma");
 const getUserFromLineId = (lineid) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.findFirst({
@@ -96,6 +96,21 @@ const createExpert = (query) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.createExpert = createExpert;
-const createExpertWithEmailAndPassword = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUser = (u_id) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma_1.prisma.users.delete({
+        where: {
+            u_id: u_id
+        }
+    });
 });
+exports.deleteUser = deleteUser;
+const banUser = (u_id) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma_1.prisma.users.update({
+        data: {},
+        where: {
+            u_id: u_id
+        }
+    });
+});
+exports.banUser = banUser;
 //# sourceMappingURL=prisma_query_user.js.map

@@ -206,6 +206,7 @@ router.put('/update_select_result',async (req, res) => {
   const data = req.body
   const u_id = data.u_id
   const c_id = data.c_id
+  
   const result = data.result;
   const classify = updateSelectResult(c_id, u_id, result)
   res.status(200).json({message : "update success", data : classify})

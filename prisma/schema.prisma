@@ -18,6 +18,7 @@ model Users{
   email String? @unique
   phone String? @unique
   image String?
+  status Boolean @default(true)
   verify_data Boolean @default(false)
   role roleEnum @default(USER)
   create_at DateTime @default(now())

@@ -85,8 +85,23 @@ const createExpert = async (query : any) => {
   })
 }
 
-const createExpertWithEmailAndPassword = async (username : string, password : string) => {
+const deleteUser = async (u_id : string) => {
+  return await prisma.users.delete({
+    where : {
+      u_id : u_id
+    }
+  })
+}
 
+const banUser = async (u_id : string) => {
+  return await prisma.users.update({
+    data : {
+      
+    },
+    where : {
+      u_id : u_id
+    }
+  })
 }
 
 export {
@@ -98,5 +113,7 @@ export {
   getUserWithEmail,
   getCountExpert,
   setUserData,
-  createExpert
+  createExpert,
+  deleteUser,
+  banUser
 };

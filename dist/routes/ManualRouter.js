@@ -57,7 +57,7 @@ router.post("/edit_manual_noupdateImage", (req, res) => __awaiter(void 0, void 0
         const data = req.body;
         const topic = data.title;
         const description = data.body;
-        const status = data.status == "true" ? true : false;
+        const status = data.status == true ? true : false;
         const token = data.token;
         const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
         const id = data.id;
@@ -73,7 +73,7 @@ router.post("/edit_manual_updateImage", upload.single("image"), (req, res) => __
         const data = req.body;
         const topic = data.title;
         const description = data.body;
-        const status = data.status == "true" ? true : false;
+        const status = data.status == true ? true : false;
         const token = data.token;
         const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
         const id = data.id;
@@ -103,13 +103,13 @@ router.get("/manual/:id", (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
-router.delete('/manual_delete', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/manual_delete', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;
         const token = data.token;
-        const w_id = data.id;
+        const m_id = data.m_id;
         const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
-        yield (0, prisma_query_manual_1.deleteManual)(w_id, u_id.id);
+        yield (0, prisma_query_manual_1.deleteManual)(m_id, u_id.id);
         res.status(200).json({ message: "delete success" });
     }
     catch (error) {

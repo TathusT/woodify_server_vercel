@@ -151,5 +151,15 @@ router.post("/send_email", function (req, res, next) {
         }
     });
 });
+router.post("/delete_user", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const user = yield (0, prisma_query_user_1.deleteUser)(data.u_id);
+        res.status(200).json({ message: "delete success" });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 exports.default = router;
 //# sourceMappingURL=UserRouter.js.map

@@ -33,6 +33,7 @@ router.get("/user/:u_id", (req, res) => __awaiter(void 0, void 0, void 0, functi
 router.get("/user", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield (0, prisma_query_user_1.getAllUser)();
+        console.log(users);
         res.status(200).json(users);
     }
     catch (error) {
@@ -156,6 +157,16 @@ router.post("/delete_user", (req, res) => __awaiter(void 0, void 0, void 0, func
         const data = req.body;
         const user = yield (0, prisma_query_user_1.deleteUser)(data.u_id);
         res.status(200).json({ message: "delete success" });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.post("/ban_user", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const user = yield (0, prisma_query_user_1.banUser)(data.u_id);
+        res.status(200).json({ message: "ban success" });
     }
     catch (error) {
         res.status(500).json({ error: "Internal Server Error" });

@@ -44,7 +44,7 @@ const getUserFromUserId = (uid) => __awaiter(void 0, void 0, void 0, function* (
     return yield prisma_1.prisma.users.findFirst({
         where: {
             u_id: uid,
-        }
+        },
     });
 });
 exports.getUserFromUserId = getUserFromUserId;
@@ -62,16 +62,16 @@ exports.updateRoleFromId = updateRoleFromId;
 const getUserWithEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.findFirst({
         where: {
-            email: email
-        }
+            email: email,
+        },
     });
 });
 exports.getUserWithEmail = getUserWithEmail;
 const getCountExpert = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.count({
         where: {
-            role: "EXPERT"
-        }
+            role: "EXPERT",
+        },
     });
 });
 exports.getCountExpert = getCountExpert;
@@ -85,31 +85,36 @@ const setUserData = (data) => __awaiter(void 0, void 0, void 0, function* () {
             lastname: data.lastname,
             phone: data.phone,
             email: data.email,
-            verify_data: true
-        }
+            verify_data: true,
+        },
     });
 });
 exports.setUserData = setUserData;
 const createExpert = (query) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.create({
-        data: query
+        data: query,
     });
 });
 exports.createExpert = createExpert;
 const deleteUser = (u_id) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield prisma_1.prisma.users.delete({
+    return yield prisma_1.prisma.users.update({
+        data: {
+            status: "DELETE",
+        },
         where: {
-            u_id: u_id
-        }
+            u_id: u_id,
+        },
     });
 });
 exports.deleteUser = deleteUser;
 const banUser = (u_id) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.update({
-        data: {},
+        data: {
+            status: "BAN",
+        },
         where: {
-            u_id: u_id
-        }
+            u_id: u_id,
+        },
     });
 });
 exports.banUser = banUser;

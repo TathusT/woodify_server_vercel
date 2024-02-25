@@ -112,78 +112,85 @@ const getClassifyToday = async (today: any) => {
   return result;
 };
 
-const getClassifyAll = async (page : number, pageSize : number) => {
+const getClassifyAll = async (page: number, pageSize: number) => {
   const skip = (page - 1) * pageSize;
   const data = await prisma.classify.findMany({
     skip,
     take: pageSize,
-    orderBy : {
-      create_at : 'desc'
-    }
+    orderBy: {
+      create_at: "desc",
+    },
   });
   const total = await prisma.classify.count();
   return { data, total };
-}
+};
 
-const getClassifyAllWithUserId = async (page: number, pageSize: number, uid : string, filter: any = null) => {
+const getClassifyAllWithUserId = async (
+  page: number,
+  pageSize: number,
+  uid: string,
+  filter: any = null
+) => {
   const skip = (page - 1) * pageSize;
 
   const data = await prisma.classify.findMany({
-      skip,
-      take: pageSize,
-      where: {
-        create_by : uid,
-          ...filter
-      },
-      orderBy: {
-          create_at: 'desc'
-      },
-      include: {
-          notes: true,
-          creator : true
-      }
+    skip,
+    take: pageSize,
+    where: {
+      create_by: uid,
+      ...filter,
+    },
+    orderBy: {
+      create_at: "desc",
+    },
+    include: {
+      notes: true,
+      creator: true,
+    },
   });
 
   const total = await prisma.classify.count({
-      where: {
-          ...filter
-      }
+    where: {
+      ...filter,
+    },
   });
 
   return { data, total };
 };
 
-
-const getClassifyAllFilter = async (page : number, pageSize : number, filter : any = null) => {
+const getClassifyAllFilter = async (
+  page: number,
+  pageSize: number,
+  filter: any = null
+) => {
   const skip = (page - 1) * pageSize;
   const data = await prisma.classify.findMany({
     skip,
     take: pageSize,
-    where : {
-      ...filter
+    where: {
+      ...filter,
     },
-    orderBy : {
-      create_at : 'desc'
+    orderBy: {
+      create_at: "desc",
     },
   });
   const total = await prisma.classify.count({
-    where : {
-      ...filter
-    }
+    where: {
+      ...filter,
+    },
   });
   return { data, total };
-}
+};
 
 const getPieChartStatusData = async () => {
   const counts = await prisma.classify.groupBy({
-    by: ['status_verify'],
+    by: ["status_verify"],
     _count: {
       status_verify: true,
-    }
+    },
   });
   return counts;
-}
-
+};
 
 const getClassifyWithDay = async () => {
   const today = new Date();
@@ -200,7 +207,7 @@ const getClassifyWithDay = async () => {
   return result;
 };
 
-const getClassifyWithDayWithUserId = async (u_id : string) => {
+const getClassifyWithDayWithUserId = async (u_id: string) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const result = await prisma.classify.count({
@@ -209,7 +216,7 @@ const getClassifyWithDayWithUserId = async (u_id : string) => {
         gte: today,
         lt: new Date(today.getTime() + 24 * 60 * 60 * 1000),
       },
-      create_by : u_id
+      create_by: u_id,
     },
   });
 
@@ -226,9 +233,9 @@ const getClassifyById = async (c_id: string) => {
     where: {
       c_id: c_id,
     },
-    include : {
-      creator : true
-    }
+    include: {
+      creator: true,
+    },
   });
   return classify;
 };
@@ -242,11 +249,11 @@ const getClassifyWithWaitForVerify = async () => {
   return result;
 };
 
-const getClassifyWithWaitForVerifyWithUserId = async (u_id : string) => {
+const getClassifyWithWaitForVerifyWithUserId = async (u_id: string) => {
   const result = await prisma.classify.count({
     where: {
       status_verify: "WAITING_FOR_VERIFICATION",
-      create_by : u_id
+      create_by: u_id,
     },
   });
   return result;
@@ -292,12 +299,15 @@ const updateClassify = async (c_id: string, location: string) => {
   });
 };
 
-const getClassifyByUserIdDonutChart = async (uid :string, filter : any = null) => {
+const getClassifyByUserIdDonutChart = async (
+  uid: string,
+  filter: any = null
+) => {
   const classifyData = await prisma.classify.groupBy({
     by: ["select_result"],
     where: {
       create_by: uid,
-      ...filter
+      ...filter,
     },
     _count: {
       _all: true,
@@ -308,13 +318,13 @@ const getClassifyByUserIdDonutChart = async (uid :string, filter : any = null) =
     wood_name: group.select_result,
     amount: group._count._all,
   }));
-}
+};
 
-const getClassifyStatusByUserIdDonutChart = async (uid :string) => {
+const getClassifyStatusByUserIdDonutChart = async (uid: string) => {
   const classifyData = await prisma.classify.groupBy({
     by: ["status_verify"],
     where: {
-      create_by: uid
+      create_by: uid,
     },
     _count: {
       _all: true,
@@ -322,41 +332,48 @@ const getClassifyStatusByUserIdDonutChart = async (uid :string) => {
   });
 
   return classifyData.map((group) => ({
-    status: group.status_verify == 'WAITING_FOR_VERIFICATION' ? 'รอการรับรอง' : group.status_verify == 'FAILED_CERTIFICATION' ? 'ไม่ผ่าน' : 'ผ่าน',
+    status:
+      group.status_verify == "WAITING_FOR_VERIFICATION"
+        ? "รอการรับรอง"
+        : group.status_verify == "FAILED_CERTIFICATION"
+        ? "ไม่ผ่าน"
+        : "ผ่าน",
     amount: group._count._all,
   }));
-}
+};
 
-const updateStatusVerify = async (cid : string, uid : string, status : any, description : string) => {
+const updateStatusVerify = async (
+  cid: string,
+  uid: string,
+  status: any,
+  description: string
+) => {
   const classify = await prisma.classify.update({
-    where : {
-      c_id : cid
+    where: {
+      c_id: cid,
     },
-    data : {
-      verify_by : uid,
-      status_verify : status
-    }
-  })
+    data: {
+      verify_by: uid,
+      status_verify: status,
+    },
+  });
 
-  if(classify){
+  if (classify) {
     await addNote(description, cid, uid);
   }
-}
+};
 
-
-const updateSelectResult = async (cid : string, uid : string, result : string) => {
+const updateSelectResult = async (cid: string, uid: string, result: string) => {
   const classify = await prisma.classify.update({
-    where : {
-      c_id : cid
+    where: {
+      c_id: cid,
     },
-    data : {
-      select_result : result,
-      verify_by : uid
-    }
-  })
-}
-
-
+    data: {
+      select_result: result,
+      verify_by: uid,
+    },
+  });
+};
 
 export {
   getClassifyCountByWood,
@@ -378,5 +395,5 @@ export {
   getClassifyAllWithUserId,
   getClassifyAllFilter,
   updateStatusVerify,
-  updateSelectResult
+  updateSelectResult,
 };

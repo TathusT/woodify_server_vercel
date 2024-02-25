@@ -8,6 +8,7 @@ import {
   generateAccessToken,
   checkAuthentication,
   decryptAccessToken,
+  generateAccessTokenLine,
 } from "../global/token_manager";
 import {
   afterLoginSuccessUser,
@@ -34,7 +35,7 @@ router.post("/liff/login", async (req, res) => {
       image: profile.pictureUrl,
     });
 
-    const accessToken = await generateAccessToken({ id: newUser.u_id });
+    const accessToken = await generateAccessTokenLine({ id: newUser.u_id });
     return res.send(
       JSON.stringify({
         status: 1,
@@ -44,7 +45,7 @@ router.post("/liff/login", async (req, res) => {
       })
     );
   }
-  const accessToken = await generateAccessToken({ id: user[0].u_id });
+  const accessToken = await generateAccessTokenLine({ id: user[0].u_id });
 
   if (user[0].verify_data == false) {
     return res.status(200).json({ message: "not_have_data", user: user[0], line_access_token: accessToken });

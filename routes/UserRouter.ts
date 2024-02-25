@@ -1,6 +1,6 @@
 import express from 'express';
 import { Router } from 'express';
-import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, setUserData, createExpert, deleteUser} from '../global/prisma_query_user';
+import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, setUserData, createExpert, deleteUser, banUser} from '../global/prisma_query_user';
 import { decryptAccessToken, generateAccessToken } from '../global/token_manager';
 import { afterLoginSuccessExpert, afterLoginSuccessUser } from '../global/richmenu';
 import { addTokenInvited } from '../global/prisma_query_addToken';
@@ -22,6 +22,8 @@ router.get("/user/:u_id",async (req, res) => {
 router.get("/user",async (req, res) => {
   try {
     const users = await getAllUser();
+    console.log(users);
+    
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -149,6 +151,16 @@ router.post("/delete_user",async (req, res) => {
     const data = req.body;
     const user = await deleteUser(data.u_id);
     res.status(200).json({ message: "delete success"});
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
+router.post("/ban_user",async (req, res) => {
+  try {
+    const data = req.body;
+    const user = await banUser(data.u_id);
+    res.status(200).json({ message: "ban success"});
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }

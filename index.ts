@@ -42,7 +42,7 @@ const io = new Server(httpServer, {
   cors: {
     origin: "*",
   },
-});
+}); 
 
 io.on("connection", (socket) => {
   console.log("🚀 ~ Client Connected:", socket.id);

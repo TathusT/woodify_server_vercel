@@ -114,8 +114,8 @@ const getClassifyAll = (page, pageSize) => __awaiter(void 0, void 0, void 0, fun
         skip,
         take: pageSize,
         orderBy: {
-            create_at: 'desc'
-        }
+            create_at: "desc",
+        },
     });
     const total = yield prisma_1.prisma.classify.count();
     return { data, total };
@@ -128,15 +128,15 @@ const getClassifyAllWithUserId = (page, pageSize, uid, filter = null) => __await
         take: pageSize,
         where: Object.assign({ create_by: uid }, filter),
         orderBy: {
-            create_at: 'desc'
+            create_at: "desc",
         },
         include: {
             notes: true,
-            creator: true
-        }
+            creator: true,
+        },
     });
     const total = yield prisma_1.prisma.classify.count({
-        where: Object.assign({}, filter)
+        where: Object.assign({}, filter),
     });
     return { data, total };
 });
@@ -148,21 +148,21 @@ const getClassifyAllFilter = (page, pageSize, filter = null) => __awaiter(void 0
         take: pageSize,
         where: Object.assign({}, filter),
         orderBy: {
-            create_at: 'desc'
+            create_at: "desc",
         },
     });
     const total = yield prisma_1.prisma.classify.count({
-        where: Object.assign({}, filter)
+        where: Object.assign({}, filter),
     });
     return { data, total };
 });
 exports.getClassifyAllFilter = getClassifyAllFilter;
 const getPieChartStatusData = () => __awaiter(void 0, void 0, void 0, function* () {
     const counts = yield prisma_1.prisma.classify.groupBy({
-        by: ['status_verify'],
+        by: ["status_verify"],
         _count: {
             status_verify: true,
-        }
+        },
     });
     return counts;
 });
@@ -190,7 +190,7 @@ const getClassifyWithDayWithUserId = (u_id) => __awaiter(void 0, void 0, void 0,
                 gte: today,
                 lt: new Date(today.getTime() + 24 * 60 * 60 * 1000),
             },
-            create_by: u_id
+            create_by: u_id,
         },
     });
     return result;
@@ -207,8 +207,8 @@ const getClassifyById = (c_id) => __awaiter(void 0, void 0, void 0, function* ()
             c_id: c_id,
         },
         include: {
-            creator: true
-        }
+            creator: true,
+        },
     });
     return classify;
 });
@@ -226,7 +226,7 @@ const getClassifyWithWaitForVerifyWithUserId = (u_id) => __awaiter(void 0, void 
     const result = yield prisma_1.prisma.classify.count({
         where: {
             status_verify: "WAITING_FOR_VERIFICATION",
-            create_by: u_id
+            create_by: u_id,
         },
     });
     return result;
@@ -286,14 +286,18 @@ const getClassifyStatusByUserIdDonutChart = (uid) => __awaiter(void 0, void 0, v
     const classifyData = yield prisma_1.prisma.classify.groupBy({
         by: ["status_verify"],
         where: {
-            create_by: uid
+            create_by: uid,
         },
         _count: {
             _all: true,
         },
     });
     return classifyData.map((group) => ({
-        status: group.status_verify == 'WAITING_FOR_VERIFICATION' ? 'รอการรับรอง' : group.status_verify == 'FAILED_CERTIFICATION' ? 'ไม่ผ่าน' : 'ผ่าน',
+        status: group.status_verify == "WAITING_FOR_VERIFICATION"
+            ? "รอการรับรอง"
+            : group.status_verify == "FAILED_CERTIFICATION"
+                ? "ไม่ผ่าน"
+                : "ผ่าน",
         amount: group._count._all,
     }));
 });
@@ -301,12 +305,12 @@ exports.getClassifyStatusByUserIdDonutChart = getClassifyStatusByUserIdDonutChar
 const updateStatusVerify = (cid, uid, status, description) => __awaiter(void 0, void 0, void 0, function* () {
     const classify = yield prisma_1.prisma.classify.update({
         where: {
-            c_id: cid
+            c_id: cid,
         },
         data: {
             verify_by: uid,
-            status_verify: status
-        }
+            status_verify: status,
+        },
     });
     if (classify) {
         yield (0, prisma_query_note_1.addNote)(description, cid, uid);
@@ -316,12 +320,12 @@ exports.updateStatusVerify = updateStatusVerify;
 const updateSelectResult = (cid, uid, result) => __awaiter(void 0, void 0, void 0, function* () {
     const classify = yield prisma_1.prisma.classify.update({
         where: {
-            c_id: cid
+            c_id: cid,
         },
         data: {
             select_result: result,
-            verify_by: uid
-        }
+            verify_by: uid,
+        },
     });
 });
 exports.updateSelectResult = updateSelectResult;

@@ -33,7 +33,7 @@ const getUserFromUserId = async (uid: string) => {
   return await prisma.users.findFirst({
     where: {
       u_id: uid,
-    }
+    },
   });
 };
 
@@ -48,61 +48,64 @@ const updateRoleFromId = async (uid: string, role: any) => {
   });
 };
 
-const getUserWithEmail = async (email : string) => {
+const getUserWithEmail = async (email: string) => {
   return await prisma.users.findFirst({
-    where : {
-      email : email
-    }
-  })
+    where: {
+      email: email,
+    },
+  });
 };
 
 const getCountExpert = async () => {
   return await prisma.users.count({
-    where : {
-      role : "EXPERT"
-    }
-  })
-}
-
-const setUserData = async (data : any) => {
-  return await prisma.users.update({
-    where : {
-      line_id : data.line_id,
+    where: {
+      role: "EXPERT",
     },
-    data : {
-      firstname : data.firstname,
-      lastname : data.lastname,
-      phone : data.phone,
-      email : data.email,
-      verify_data : true
-    }
-  })
-}
+  });
+};
 
-const createExpert = async (query : any) => {
+const setUserData = async (data: any) => {
+  return await prisma.users.update({
+    where: {
+      line_id: data.line_id,
+    },
+    data: {
+      firstname: data.firstname,
+      lastname: data.lastname,
+      phone: data.phone,
+      email: data.email,
+      verify_data: true,
+    },
+  });
+};
+
+const createExpert = async (query: any) => {
   return await prisma.users.create({
-    data : query
-  })
-}
+    data: query,
+  });
+};
 
-const deleteUser = async (u_id : string) => {
-  return await prisma.users.delete({
-    where : {
-      u_id : u_id
-    }
-  })
-}
-
-const banUser = async (u_id : string) => {
+const deleteUser = async (u_id: string) => {
   return await prisma.users.update({
-    data : {
-      
+    data: {
+      status: "DELETE",
     },
-    where : {
-      u_id : u_id
-    }
-  })
-}
+    where: {
+      u_id: u_id,
+    },
+  });
+};
+
+const banUser = async (u_id: string) => {
+  return await prisma.users.update({
+    data: {
+      status: "BAN",
+    },
+    where: {
+      u_id: u_id,
+    },
+  });
+};
 
 export {
   getUserFromLineId,
@@ -115,5 +118,5 @@ export {
   setUserData,
   createExpert,
   deleteUser,
-  banUser
+  banUser,
 };

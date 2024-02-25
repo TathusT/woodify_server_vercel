@@ -93,6 +93,20 @@ router.get("/all_manual", (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
+router.post("/all_manual_filter", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const pageSize = data.pageSize;
+        const currentPage = data.currentPage;
+        const filter = data.filter;
+        const orderBy = data.orderBy;
+        const manual = yield (0, prisma_query_manual_1.getAllManualWithFilter)(parseInt(currentPage), parseInt(pageSize), filter, orderBy);
+        res.status(200).json(manual);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 router.get("/manual/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const manualId = req.params.id;
@@ -103,7 +117,7 @@ router.get("/manual/:id", (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
-router.post('/manual_delete', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/manual_delete", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;
         const token = data.token;
@@ -113,7 +127,7 @@ router.post('/manual_delete', (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(200).json({ message: "delete success" });
     }
     catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: "Internal Server Error" });
     }
 }));
 exports.default = router;

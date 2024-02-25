@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteManual = exports.updateManualNotImage = exports.updateManualImage = exports.getManual = exports.getAllManual = exports.createManual = void 0;
+exports.getAllManualWithFilter = exports.deleteManual = exports.updateManualNotImage = exports.updateManualImage = exports.getManual = exports.getAllManual = exports.createManual = void 0;
 const prisma_1 = require("./prisma");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
@@ -115,7 +115,7 @@ function deleteManual(id, u_id) {
                     where: {
                         m_id: id,
                     },
-                })
+                }),
             ]);
         }
     });
@@ -127,6 +127,23 @@ function getAllManual() {
     });
 }
 exports.getAllManual = getAllManual;
+function getAllManualWithFilter(page, pageSize, filter = null, orderBy = null) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const skip = (page - 1) * pageSize;
+        const data = yield prisma_1.prisma.manual.findMany({
+            skip,
+            take: pageSize,
+            where: Object.assign({}, filter),
+            orderBy: Object.assign({}, orderBy // เรียงลำดับตามเวลาอัปเดตล่าสุด
+            ),
+        });
+        const total = yield prisma_1.prisma.manual.count({
+            where: Object.assign({}, filter),
+        });
+        return { data, total };
+    });
+}
+exports.getAllManualWithFilter = getAllManualWithFilter;
 function getManual(id) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield prisma_1.prisma.manual.findMany({

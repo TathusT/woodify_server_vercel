@@ -32,7 +32,7 @@ router.post("/liff/login", (req, res) => __awaiter(void 0, void 0, void 0, funct
             phone: "",
             image: profile.pictureUrl,
         });
-        const accessToken = yield (0, token_manager_1.generateAccessToken)({ id: newUser.u_id });
+        const accessToken = yield (0, token_manager_1.generateAccessTokenLine)({ id: newUser.u_id });
         return res.send(JSON.stringify({
             status: 1,
             line_access_token: accessToken,
@@ -40,7 +40,7 @@ router.post("/liff/login", (req, res) => __awaiter(void 0, void 0, void 0, funct
             user: newUser
         }));
     }
-    const accessToken = yield (0, token_manager_1.generateAccessToken)({ id: user[0].u_id });
+    const accessToken = yield (0, token_manager_1.generateAccessTokenLine)({ id: user[0].u_id });
     if (user[0].verify_data == false) {
         return res.status(200).json({ message: "not_have_data", user: user[0], line_access_token: accessToken });
     }

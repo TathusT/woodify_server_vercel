@@ -18,7 +18,7 @@ model Users{
   email String? @unique
   phone String? @unique
   image String?
-  status Boolean @default(true)
+  status statusEnum @default(ACTIVE)
   verify_data Boolean @default(false)
   role roleEnum @default(USER)
   create_at DateTime @default(now())
@@ -30,6 +30,12 @@ model Users{
   created_classify Classify[] @relation("created_classify")
   verify_classify Classify[] @relation("verify_classify")
   notes Note[] @relation("note_creator")
+}
+
+enum statusEnum {
+  ACTIVE
+  BAN
+  DELETE
 }
 
 enum roleEnum {

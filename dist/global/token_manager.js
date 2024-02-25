@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decryptAccessToken = exports.checkAuthentication = exports.generateAccessToken = void 0;
+exports.generateAccessTokenLine = exports.decryptAccessToken = exports.checkAuthentication = exports.generateAccessToken = void 0;
 const jwt = require("jsonwebtoken");
 function generateAccessToken(payload) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -17,6 +17,12 @@ function generateAccessToken(payload) {
     });
 }
 exports.generateAccessToken = generateAccessToken;
+function generateAccessTokenLine(payload) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return jwt.sign(payload, process.env.ACCESS_TOKEN, { expiresIn: "365d" });
+    });
+}
+exports.generateAccessTokenLine = generateAccessTokenLine;
 function checkAuthentication(request) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

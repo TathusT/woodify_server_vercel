@@ -99,25 +99,47 @@ async function updateManualImage(
 }
 
 async function deleteManual(id: string, u_id: string) {
-    const user = await prisma.users.findMany({
-      where: {
-        u_id: u_id,
-      },
-    });
-  
-    if (user[0].role == "EXPERT") {
-      await prisma.$transaction([
-        prisma.manual.deleteMany({
-          where: {
-            m_id: id,
-          },
-        })
-      ]);
-    }
+  const user = await prisma.users.findMany({
+    where: {
+      u_id: u_id,
+    },
+  });
+
+  if (user[0].role == "EXPERT") {
+    await prisma.$transaction([
+      prisma.manual.deleteMany({
+        where: {
+          m_id: id,
+        },
+      }),
+    ]);
   }
+}
 
 async function getAllManual() {
   return await prisma.manual.findMany();
+}
+
+async function getAllManualWithFilter(page : number, pageSize : number, filter: any = null, orderBy : any = null) {
+  const skip = (page - 1) * pageSize;
+  const data = await prisma.manual.findMany({
+    skip,
+    take: pageSize,
+    where: {
+      ...filter,
+    },
+    orderBy: {
+      ...orderBy // เรียงลำดับตามเวลาอัปเดตล่าสุด
+    },
+  });
+
+  const total = await prisma.manual.count({
+    where: {
+      ...filter,
+    },
+  });
+
+  return { data, total };
 }
 
 async function getManual(id: string) {
@@ -133,5 +155,6 @@ export {
   getManual,
   updateManualImage,
   updateManualNotImage,
-  deleteManual
+  deleteManual,
+  getAllManualWithFilter
 };

@@ -26,22 +26,22 @@ require("dotenv").config();
 
 const router: Router = express.Router();
 
-router.get("/dashboard_classify_column/:dateFrom/:dateTo", async (req, res) => {
+router.post("/dashboard_classify_column", async (req, res) => {
   try {
-    const dateFrom = req.params.dateFrom.replace(/-/g, '/');
-    const dateTo = req.params.dateTo.replace(/-/g, '/');
-    const classify = await getClassifyCountByWood(dateFrom, dateTo);
+    const data = req.body;
+    const filter = data.filter
+    const classify = await getClassifyCountByWood(filter);
     res.status(200).json(classify);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-router.get("/dashboard_classify_line/:dateFrom/:dateTo", async (req, res) => {
-  const dateFrom = req.params.dateFrom.replace(/-/g, '/');
-  const dateTo = req.params.dateTo.replace(/-/g, '/');
+router.post("/dashboard_classify_line", async (req, res) => {
   try {
-    const classify = await getClassifyWithDate(dateFrom, dateTo);
+    const data = req.body;
+    const filter = data.filter
+    const classify = await getClassifyWithDate(filter);
     res.status(200).json(classify);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });

@@ -20,8 +20,8 @@ dotenv.config();
 const rootDirectoryPath = path.join(__dirname);
 
 const app: Express = express();
-app.use(bodyParser.json({ limit: "100mb" }));
-app.use(bodyParser.urlencoded({ extended: true, limit: "100mb" }));
+app.use(bodyParser.json({ limit: "1000mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "1000mb" }));
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));

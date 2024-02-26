@@ -17,18 +17,11 @@ const prisma_1 = require("./prisma");
 const prisma_query_note_1 = require("./prisma_query_note");
 const prisma_query_user_1 = require("./prisma_query_user");
 const cuid_1 = __importDefault(require("cuid"));
-function getClassifyCountByWood(dateFrom, dateTo) {
+function getClassifyCountByWood(filter = null) {
     return __awaiter(this, void 0, void 0, function* () {
-        const dateFromIso = new Date(dateFrom);
-        const dateToIso = new Date(dateTo);
         const classifyData = yield prisma_1.prisma.classify.groupBy({
             by: ["select_result"],
-            where: {
-                create_at: {
-                    gte: dateFromIso,
-                    lte: dateToIso,
-                },
-            },
+            where: Object.assign({}, filter),
             _count: {
                 _all: true,
             },
@@ -40,9 +33,7 @@ function getClassifyCountByWood(dateFrom, dateTo) {
     });
 }
 exports.getClassifyCountByWood = getClassifyCountByWood;
-const getClassifyWithDate = (dateFrom, dateTo) => __awaiter(void 0, void 0, void 0, function* () {
-    const dateFromIso = new Date(dateFrom);
-    const dateToIso = new Date(dateTo);
+const getClassifyWithDate = (filter = null) => __awaiter(void 0, void 0, void 0, function* () {
     const months = [
         { short: "ม.ค", full: "มกราคม" },
         { short: "ก.พ", full: "กุมภาพันธ์" },
@@ -58,12 +49,7 @@ const getClassifyWithDate = (dateFrom, dateTo) => __awaiter(void 0, void 0, void
         { short: "ธ.ค", full: "ธันวาคม" },
     ];
     const classifyData = yield prisma_1.prisma.classify.findMany({
-        where: {
-            create_at: {
-                gte: dateFromIso,
-                lte: dateToIso,
-            },
-        },
+        where: Object.assign({}, filter),
     });
     const resultMap = new Map();
     classifyData.forEach((entry) => {

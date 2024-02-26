@@ -138,6 +138,8 @@ router.post("/manual_delete", async (req, res) => {
     const data = req.body;
     const token = data.token;
     const m_id = data.m_id;
+    console.log(data);
+    
     const u_id = await decryptAccessToken(token);
     await deleteManual(m_id, u_id.id);
     res.status(200).json({ message: "delete success" });

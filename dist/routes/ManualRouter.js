@@ -122,6 +122,7 @@ router.post("/manual_delete", (req, res) => __awaiter(void 0, void 0, void 0, fu
         const data = req.body;
         const token = data.token;
         const m_id = data.m_id;
+        console.log(data);
         const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
         yield (0, prisma_query_manual_1.deleteManual)(m_id, u_id.id);
         res.status(200).json({ message: "delete success" });

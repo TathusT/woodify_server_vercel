@@ -16,22 +16,22 @@ const express_1 = __importDefault(require("express"));
 const prisma_query_classify_1 = require("../global/prisma_query_classify");
 require("dotenv").config();
 const router = express_1.default.Router();
-router.get("/dashboard_classify_column/:dateFrom/:dateTo", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/dashboard_classify_column", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const dateFrom = req.params.dateFrom.replace(/-/g, '/');
-        const dateTo = req.params.dateTo.replace(/-/g, '/');
-        const classify = yield (0, prisma_query_classify_1.getClassifyCountByWood)(dateFrom, dateTo);
+        const data = req.body;
+        const filter = data.filter;
+        const classify = yield (0, prisma_query_classify_1.getClassifyCountByWood)(filter);
         res.status(200).json(classify);
     }
     catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
-router.get("/dashboard_classify_line/:dateFrom/:dateTo", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const dateFrom = req.params.dateFrom.replace(/-/g, '/');
-    const dateTo = req.params.dateTo.replace(/-/g, '/');
+router.post("/dashboard_classify_line", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const classify = yield (0, prisma_query_classify_1.getClassifyWithDate)(dateFrom, dateTo);
+        const data = req.body;
+        const filter = data.filter;
+        const classify = yield (0, prisma_query_classify_1.getClassifyWithDate)(filter);
         res.status(200).json(classify);
     }
     catch (error) {

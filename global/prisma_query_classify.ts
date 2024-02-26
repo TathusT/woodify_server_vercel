@@ -15,17 +15,11 @@ interface CountData {
   count: number;
 }
 
-async function getClassifyCountByWood(dateFrom: string, dateTo: string) {
-  const dateFromIso = new Date(dateFrom);
-  const dateToIso = new Date(dateTo);
-
+async function getClassifyCountByWood(filter : any = null) {
   const classifyData = await prisma.classify.groupBy({
     by: ["select_result"],
     where: {
-      create_at: {
-        gte: dateFromIso,
-        lte: dateToIso,
-      },
+      ...filter
     },
     _count: {
       _all: true,
@@ -38,9 +32,7 @@ async function getClassifyCountByWood(dateFrom: string, dateTo: string) {
   }));
 }
 
-const getClassifyWithDate = async (dateFrom: string, dateTo: string) => {
-  const dateFromIso = new Date(dateFrom);
-  const dateToIso = new Date(dateTo);
+const getClassifyWithDate = async (filter : any = null) => {
   const months = [
     { short: "ม.ค", full: "มกราคม" },
     { short: "ก.พ", full: "กุมภาพันธ์" },
@@ -57,10 +49,7 @@ const getClassifyWithDate = async (dateFrom: string, dateTo: string) => {
   ];
   const classifyData = await prisma.classify.findMany({
     where: {
-      create_at: {
-        gte: dateFromIso,
-        lte: dateToIso,
-      },
+      ...filter
     },
   });
   const resultMap = new Map();

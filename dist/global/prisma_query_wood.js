@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteImageWood = exports.createWoodInfo = exports.updateWoodImage = exports.deleteWoodInfo = exports.getWoodInfoOne = exports.updateWoodInfoNoImage = exports.getWoodInfo = void 0;
+exports.getWoodInfoLine = exports.deleteImageWood = exports.createWoodInfo = exports.updateWoodImage = exports.deleteWoodInfo = exports.getWoodInfoOne = exports.updateWoodInfoNoImage = exports.getWoodInfo = void 0;
 const prisma_1 = require("./prisma");
 const fs_1 = __importDefault(require("fs"));
 function getWoodInfo() {
@@ -25,6 +25,19 @@ function getWoodInfo() {
     });
 }
 exports.getWoodInfo = getWoodInfo;
+function getWoodInfoLine() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield prisma_1.prisma.wood_info.findMany({
+            where: {
+                status: true
+            },
+            include: {
+                wood_image: true,
+            },
+        });
+    });
+}
+exports.getWoodInfoLine = getWoodInfoLine;
 function getWoodInfoOne(id) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield prisma_1.prisma.wood_info.findMany({
@@ -85,11 +98,11 @@ function updateWoodImage(paths, id) {
         let query = paths.map((value) => {
             return {
                 w_id: id,
-                path: "/image/wood_image/" + value
+                path: "/image/wood_image/" + value,
             };
         });
         yield prisma_1.prisma.wood_Image.createMany({
-            data: query
+            data: query,
         });
     });
 }
@@ -103,17 +116,17 @@ function deleteImageWood(w_id, deleteImage = null) {
             let path_delete = yield prisma_1.prisma.wood_Image.findMany({
                 where: {
                     path: {
-                        in: deleteImage
-                    }
-                }
+                        in: deleteImage,
+                    },
+                },
             });
             let w_id_delete = path_delete.map((value) => value.wi_id);
             return yield prisma_1.prisma.wood_Image.deleteMany({
                 where: {
                     w_id: w_id,
                     wi_id: {
-                        in: w_id_delete
-                    }
+                        in: w_id_delete,
+                    },
                 },
             });
         }

@@ -6,7 +6,7 @@ import axios from "axios";
 import fs from "fs";
 import FormData from "form-data";
 import { lineConfig } from "../global/line/line_config";
-import { getWoodInfo } from "../global/prisma_query_wood";
+import { getWoodInfo, getWoodInfoLine } from "../global/prisma_query_wood";
 import { createClassifyDB } from "../global/prisma_query_classify";
 
 const router: Router = express.Router();
@@ -25,7 +25,7 @@ router.post("/webhook", async (req, res) => {
 
 const createWoodCarousel = async (uid: string, event : any) => {
   const objectBubble: any = [];
-  const dataWood = await getWoodInfo();
+  const dataWood = await getWoodInfoLine();
   const max = 11;
   let more = false;
   let urlRequest;
@@ -218,8 +218,12 @@ const createManualCarousel = async (uid: string, event : any) => {
   let objectBubble: any = [];
   let sliceManual;
   let more = false;
-  let max = 12;
-  const dataManual = await prisma.manual.findMany();
+  let max = 11;
+  const dataManual = await prisma.manual.findMany({
+    where : {
+      status : true
+    }
+  });
 
   if(dataManual.length == 0 || dataManual == null){
     return client.replyMessage(event.replyToken, {

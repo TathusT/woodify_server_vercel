@@ -107,6 +107,29 @@ const banUser = async (u_id: string) => {
   });
 };
 
+const getAllUserWithFilter = async (
+  page: number,
+  pageSize: number,
+  filter: any = null,
+) => {
+  const skip = (page - 1) * pageSize;
+  const data = await prisma.users.findMany({
+    skip,
+    take: pageSize,
+    where: {
+      ...filter,
+    }
+  });
+
+  const total = await prisma.users.count({
+    where: {
+      ...filter,
+    },
+  });
+
+  return { data, total };
+};
+
 export {
   getUserFromLineId,
   getUserFromUserId,
@@ -119,4 +142,5 @@ export {
   createExpert,
   deleteUser,
   banUser,
+  getAllUserWithFilter,
 };

@@ -58,7 +58,7 @@ router.post("/webhook", (req, res) => __awaiter(void 0, void 0, void 0, function
 }));
 const createWoodCarousel = (uid, event) => __awaiter(void 0, void 0, void 0, function* () {
     const objectBubble = [];
-    const dataWood = yield (0, prisma_query_wood_1.getWoodInfo)();
+    const dataWood = yield (0, prisma_query_wood_1.getWoodInfoLine)();
     const max = 11;
     let more = false;
     let urlRequest;
@@ -244,8 +244,12 @@ const createManualCarousel = (uid, event) => __awaiter(void 0, void 0, void 0, f
     let objectBubble = [];
     let sliceManual;
     let more = false;
-    let max = 12;
-    const dataManual = yield prisma_1.prisma.manual.findMany();
+    let max = 11;
+    const dataManual = yield prisma_1.prisma.manual.findMany({
+        where: {
+            status: true
+        }
+    });
     if (dataManual.length == 0 || dataManual == null) {
         return client.replyMessage(event.replyToken, {
             type: "text",

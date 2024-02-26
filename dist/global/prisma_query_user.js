@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.banUser = exports.deleteUser = exports.createExpert = exports.setUserData = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
+exports.getAllUserWithFilter = exports.banUser = exports.deleteUser = exports.createExpert = exports.setUserData = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
 const prisma_1 = require("./prisma");
 const getUserFromLineId = (lineid) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.findFirst({
@@ -118,4 +118,17 @@ const banUser = (u_id) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.banUser = banUser;
+const getAllUserWithFilter = (page, pageSize, filter = null) => __awaiter(void 0, void 0, void 0, function* () {
+    const skip = (page - 1) * pageSize;
+    const data = yield prisma_1.prisma.users.findMany({
+        skip,
+        take: pageSize,
+        where: Object.assign({}, filter)
+    });
+    const total = yield prisma_1.prisma.users.count({
+        where: Object.assign({}, filter),
+    });
+    return { data, total };
+});
+exports.getAllUserWithFilter = getAllUserWithFilter;
 //# sourceMappingURL=prisma_query_user.js.map

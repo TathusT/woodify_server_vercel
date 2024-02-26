@@ -1,6 +1,6 @@
 import express from 'express';
 import { Router } from 'express';
-import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, setUserData, createExpert, deleteUser, banUser} from '../global/prisma_query_user';
+import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, setUserData, createExpert, deleteUser, banUser, getAllUserWithFilter} from '../global/prisma_query_user';
 import { decryptAccessToken, generateAccessToken } from '../global/token_manager';
 import { afterLoginSuccessExpert, afterLoginSuccessUser } from '../global/richmenu';
 import { addTokenInvited } from '../global/prisma_query_addToken';
@@ -165,5 +165,22 @@ router.post("/ban_user",async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 })
+
+router.post("/all_users_filter", async (req, res) => {
+  try {
+    const data = req.body;
+    const pageSize = data.pageSize;
+    const currentPage = data.currentPage;
+    const filter = data.filter;
+    const manual = await getAllUserWithFilter(
+      parseInt(currentPage),
+      parseInt(pageSize),
+      filter
+    );
+    res.status(200).json(manual);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 export default router;

@@ -1,8 +1,19 @@
 import { prisma } from "./prisma";
-import fs from "fs"
+import fs from "fs";
 
 async function getWoodInfo() {
   return await prisma.wood_info.findMany({
+    include: {
+      wood_image: true,
+    },
+  });
+}
+
+async function getWoodInfoLine() {
+  return await prisma.wood_info.findMany({
+    where : {
+      status : true
+    },
     include: {
       wood_image: true,
     },
@@ -75,47 +86,44 @@ async function createWoodInfo(
       anatomical_characteristics: anatomical_characteristics,
       other: other,
       status: status,
-      create_by : u_id.id,
+      create_by: u_id.id,
       update_by: u_id.id,
     },
   });
 }
 
-
-
-
-async function updateWoodImage(paths : any, id : string){
-  let query = paths.map((value : any) => {
+async function updateWoodImage(paths: any, id: string) {
+  let query = paths.map((value: any) => {
     return {
-      w_id : id,
-      path : "/image/wood_image/" + value
-    }
-  })
+      w_id: id,
+      path: "/image/wood_image/" + value,
+    };
+  });
 
   await prisma.wood_Image.createMany({
-    data : query
-  })
+    data: query,
+  });
 }
 
-async function deleteImageWood (w_id : string, deleteImage : any = null) {
-  if(deleteImage != null){
-    deleteImage.map((path : any) => {
+async function deleteImageWood(w_id: string, deleteImage: any = null) {
+  if (deleteImage != null) {
+    deleteImage.map((path: any) => {
       fs.unlink(`.${path}`, (err) => {});
-    })
+    });
     let path_delete = await prisma.wood_Image.findMany({
-      where : {
-        path : {
-          in : deleteImage
-        }
-      }
-    })
-    let w_id_delete = path_delete.map((value) => value.wi_id)
+      where: {
+        path: {
+          in: deleteImage,
+        },
+      },
+    });
+    let w_id_delete = path_delete.map((value) => value.wi_id);
     return await prisma.wood_Image.deleteMany({
       where: {
-        w_id : w_id,
-        wi_id : {
-          in : w_id_delete
-        }
+        w_id: w_id,
+        wi_id: {
+          in: w_id_delete,
+        },
       },
     });
   }
@@ -148,4 +156,13 @@ async function deleteWoodInfo(id: string, u_id: string) {
   }
 }
 
-export { getWoodInfo, updateWoodInfoNoImage, getWoodInfoOne, deleteWoodInfo, updateWoodImage, createWoodInfo, deleteImageWood };
+export {
+  getWoodInfo,
+  updateWoodInfoNoImage,
+  getWoodInfoOne,
+  deleteWoodInfo,
+  updateWoodImage,
+  createWoodInfo,
+  deleteImageWood,
+  getWoodInfoLine
+};

@@ -172,5 +172,18 @@ router.post("/ban_user", (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
+router.post("/all_users_filter", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const pageSize = data.pageSize;
+        const currentPage = data.currentPage;
+        const filter = data.filter;
+        const manual = yield (0, prisma_query_user_1.getAllUserWithFilter)(parseInt(currentPage), parseInt(pageSize), filter);
+        res.status(200).json(manual);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 exports.default = router;
 //# sourceMappingURL=UserRouter.js.map

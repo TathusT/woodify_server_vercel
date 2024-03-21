@@ -140,6 +140,7 @@ const getClassifyAllWithUserId = async (
 
   const total = await prisma.classify.count({
     where: {
+      create_by: uid,
       ...filter,
     },
   });
@@ -346,10 +347,6 @@ const updateStatusVerify = async (
       status_verify: status,
     },
   });
-
-  if (classify) {
-    await addNote(description, cid, uid);
-  }
 };
 
 const updateSelectResult = async (cid: string, uid: string, result: string) => {
@@ -360,6 +357,17 @@ const updateSelectResult = async (cid: string, uid: string, result: string) => {
     data: {
       select_result: result,
       verify_by: uid,
+    },
+  });
+};
+
+const deleteClassify = async (cid: string) => {
+  await prisma.classify.update({
+    where: {
+      c_id: cid,
+    },
+    data: {
+      status : false
     },
   });
 };
@@ -385,4 +393,5 @@ export {
   getClassifyAllFilter,
   updateStatusVerify,
   updateSelectResult,
+  deleteClassify
 };

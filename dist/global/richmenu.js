@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sessionOut = exports.afterLoginSuccessExpert = exports.afterLoginSuccessUser = void 0;
+exports.activeUserRichMenu = exports.deleteUserRichMenu = exports.banUserRichMenu = exports.sessionOut = exports.afterLoginSuccessExpert = exports.afterLoginSuccessUser = void 0;
 const axios_1 = __importDefault(require("axios"));
 const line_config_1 = require("./line/line_config");
 const richmenu_1 = require("./line/richmenu");
@@ -56,4 +56,43 @@ function sessionOut(uid) {
     });
 }
 exports.sessionOut = sessionOut;
+function banUserRichMenu(line_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let urlRequest = `https://api.line.me/v2/bot/user/${line_id}/richmenu/${richmenu_1.banUserLine}`;
+        yield axios_1.default.request({
+            method: "POST",
+            url: `${urlRequest}`,
+            headers: {
+                Authorization: `Bearer ` + line_config_1.lineConfig.channelAccessToken,
+            },
+        });
+    });
+}
+exports.banUserRichMenu = banUserRichMenu;
+function deleteUserRichMenu(line_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let urlRequest = `https://api.line.me/v2/bot/user/${line_id}/richmenu/${richmenu_1.deleteUserLine}`;
+        yield axios_1.default.request({
+            method: "POST",
+            url: `${urlRequest}`,
+            headers: {
+                Authorization: `Bearer ` + line_config_1.lineConfig.channelAccessToken,
+            },
+        });
+    });
+}
+exports.deleteUserRichMenu = deleteUserRichMenu;
+function activeUserRichMenu(line_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let urlRequest = `https://api.line.me/v2/bot/user/${line_id}/richmenu/${richmenu_1.loginLine}`;
+        yield axios_1.default.request({
+            method: "POST",
+            url: `${urlRequest}`,
+            headers: {
+                Authorization: `Bearer ` + line_config_1.lineConfig.channelAccessToken,
+            },
+        });
+    });
+}
+exports.activeUserRichMenu = activeUserRichMenu;
 //# sourceMappingURL=richmenu.js.map

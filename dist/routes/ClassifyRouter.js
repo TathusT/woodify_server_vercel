@@ -185,5 +185,11 @@ router.put('/update_select_result', (req, res) => __awaiter(void 0, void 0, void
     const classify = (0, prisma_query_classify_1.updateSelectResult)(c_id, u_id, result);
     res.status(200).json({ message: "update success", data: classify });
 }));
+router.post('/delete_classify', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = req.body;
+    const c_id = data.c_id;
+    yield (0, prisma_query_classify_1.deleteClassify)(c_id);
+    res.status(200).json({ message: "delete success" });
+}));
 exports.default = router;
 //# sourceMappingURL=ClassifyRouter.js.map

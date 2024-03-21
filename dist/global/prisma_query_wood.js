@@ -104,6 +104,7 @@ function updateWoodImage(paths, id) {
         yield prisma_1.prisma.wood_Image.createMany({
             data: query,
         });
+        return true;
     });
 }
 exports.updateWoodImage = updateWoodImage;

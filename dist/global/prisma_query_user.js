@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllUserWithFilter = exports.banUser = exports.deleteUser = exports.createExpert = exports.setUserData = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
+exports.updateUser = exports.activeUser = exports.getAllUserWithFilter = exports.banUser = exports.deleteUser = exports.createExpert = exports.setUserData = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
 const prisma_1 = require("./prisma");
 const getUserFromLineId = (lineid) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.findFirst({
@@ -118,12 +118,23 @@ const banUser = (u_id) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.banUser = banUser;
+const activeUser = (u_id) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma_1.prisma.users.update({
+        data: {
+            status: "ACTIVE",
+        },
+        where: {
+            u_id: u_id,
+        },
+    });
+});
+exports.activeUser = activeUser;
 const getAllUserWithFilter = (page, pageSize, filter = null) => __awaiter(void 0, void 0, void 0, function* () {
     const skip = (page - 1) * pageSize;
     const data = yield prisma_1.prisma.users.findMany({
         skip,
         take: pageSize,
-        where: Object.assign({}, filter)
+        where: Object.assign({}, filter),
     });
     const total = yield prisma_1.prisma.users.count({
         where: Object.assign({}, filter),
@@ -131,4 +142,34 @@ const getAllUserWithFilter = (page, pageSize, filter = null) => __awaiter(void 0
     return { data, total };
 });
 exports.getAllUserWithFilter = getAllUserWithFilter;
+const updateUser = (data, u_id) => __awaiter(void 0, void 0, void 0, function* () {
+    if (data.email) {
+        const checkEmail = yield prisma_1.prisma.users.findMany({
+            where: {
+                email: data.email,
+            },
+        });
+        if (checkEmail.length != 0) {
+            return "email is taken";
+        }
+    }
+    if (data.phone) {
+        const checkPhone = yield prisma_1.prisma.users.findMany({
+            where: {
+                phone: data.phone,
+            },
+        });
+        if (checkPhone.length != 0) {
+            return "phone is taken";
+        }
+    }
+    const user = yield prisma_1.prisma.users.update({
+        where: {
+            u_id: u_id,
+        },
+        data: Object.assign({}, data),
+    });
+    return user; // คืนค่า user หลังจากที่อัปเดตข้อมูลเสร็จสมบูรณ์
+});
+exports.updateUser = updateUser;
 //# sourceMappingURL=prisma_query_user.js.map

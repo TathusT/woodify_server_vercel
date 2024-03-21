@@ -36,7 +36,7 @@ const storage = multer_1.default.diskStorage({
         cb(null, uploadedFilename);
     },
 });
-const upload = (0, multer_1.default)({ storage: storage });
+const upload = (0, multer_1.default)({ storage: storage, limits: { fieldSize: 25 * 1024 * 1024 } });
 router.post("/create_manual", upload.single("image"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;

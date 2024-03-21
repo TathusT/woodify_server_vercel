@@ -46,9 +46,11 @@ const prisma_query_wood_1 = require("../global/prisma_query_wood");
 const prisma_query_classify_1 = require("../global/prisma_query_classify");
 const router = express_1.default.Router();
 const client = new line.Client(line_config_1.lineConfig);
+const userStates = {};
 router.post("/webhook", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const events = req.body.events;
+        // console.log(events);
         lineEvent(events[0]);
         res.status(200).send("OK");
     }
@@ -153,7 +155,7 @@ const createWoodCarousel = (uid, event) => __awaiter(void 0, void 0, void 0, fun
             type: "bubble",
             hero: {
                 type: "image",
-                url: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ4IuDW4CkzB5rwYtOm_YuCZmnDVPdi8IZMQ&usqp=CAU`,
+                url: `/image/icon/more_wood.png`,
                 size: "full",
                 aspectRatio: "20:13",
                 aspectMode: "cover",
@@ -556,11 +558,21 @@ const lineEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
         const uid = event.source.userId;
         let message = event.message.text;
         const image = event.message.type == "image";
-        if (message == "ตรวจสอบพันธุ์ไม้") {
+        const userState = userStates[uid];
+        console.log((message != 'ข้อมูลพันธุ์ไม้' || message != 'คู่มือ'));
+        if ((!userState || userState !== "waiting_for_check") && (message != 'ข้อมูลพันธุ์ไม้' && message != 'คู่มือ')) {
+            if (message == "ตรวจสอบพันธุ์ไม้") {
+                userStates[uid] = "waiting_for_check";
+                return client.replyMessage(event.replyToken, {
+                    type: "text",
+                    text: "กรุณาอัปโหลดรูปหรือถ่ายภาพเพื่อใช้ในการตรวจสอบ",
+                });
+            }
             return client.replyMessage(event.replyToken, {
                 type: "text",
-                text: "กรุณาอัปโหลดรูปหรือถ่ายภาพเพื่อใช้ในการตรวจสอบ",
+                text: "กรุณากดเมนูตรวจสอบก่อนทำการส่งรูปภาพ",
             });
+            return;
         }
         else if (message == "ข้อมูลพันธุ์ไม้") {
             createWoodCarousel(uid, event);
@@ -570,6 +582,7 @@ const lineEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
         }
         else if (image) {
             createClassify(uid, event);
+            delete userStates[uid];
         }
     }
     catch (error) {

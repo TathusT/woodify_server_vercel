@@ -1,8 +1,8 @@
 import express from 'express';
 import { Router } from 'express';
-import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, setUserData, createExpert, deleteUser, banUser, getAllUserWithFilter} from '../global/prisma_query_user';
+import { getUserFromUserId, getAllUser, updateRoleFromId, getUserToday, getUserWithEmail, getCountExpert, setUserData, createExpert, deleteUser, banUser, getAllUserWithFilter, activeUser, updateUser} from '../global/prisma_query_user';
 import { decryptAccessToken, generateAccessToken } from '../global/token_manager';
-import { afterLoginSuccessExpert, afterLoginSuccessUser } from '../global/richmenu';
+import { activeUserRichMenu, afterLoginSuccessExpert, afterLoginSuccessUser, banUserRichMenu, deleteUserRichMenu } from '../global/richmenu';
 import { addTokenInvited } from '../global/prisma_query_addToken';
 const nodemailer = require("nodemailer");
 require('dotenv').config();
@@ -150,17 +150,36 @@ router.post("/delete_user",async (req, res) => {
   try {
     const data = req.body;
     const user = await deleteUser(data.u_id);
+    if(user.status == 'DELETE'){
+      await deleteUserRichMenu(user.line_id);
+    }
     res.status(200).json({ message: "delete success"});
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
-})
+}) 
 
 router.post("/ban_user",async (req, res) => {
   try {
     const data = req.body;
     const user = await banUser(data.u_id);
+    if(user.status == 'BAN'){
+      await banUserRichMenu(user.line_id);
+    }
     res.status(200).json({ message: "ban success"});
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
+router.post("/active_user",async (req, res) => {
+  try {
+    const data = req.body;
+    const user = await activeUser(data.u_id);
+    if(user.status == 'ACTIVE'){
+      await activeUserRichMenu(user.line_id);
+    }
+    res.status(200).json({ message: "active success"});
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -178,6 +197,18 @@ router.post("/all_users_filter", async (req, res) => {
       filter
     );
     res.status(200).json(manual);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/update_profile", async (req, res) => {
+  try {
+    const data = req.body;
+    const user = await updateUser(data.data, data.u_id)
+    console.log(user);
+    
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }

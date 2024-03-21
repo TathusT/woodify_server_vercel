@@ -102,6 +102,7 @@ router.put('/wood_image', upload.array("files"), (req, res) => __awaiter(void 0,
         const w_id = req.body.id;
         const uploadedFilenames = req.files.map(file => file.filename);
         let status = yield (0, prisma_query_wood_1.updateWoodImage)(uploadedFilenames, w_id);
+        console.log(status);
         return status;
     }
     catch (error) {
@@ -126,7 +127,6 @@ router.delete('/wood_delete', (req, res) => __awaiter(void 0, void 0, void 0, fu
         const token = data.token;
         const w_id = data.w_id;
         const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
-        console.log(w_id, token);
         yield (0, prisma_query_wood_1.deleteWoodInfo)(w_id, u_id.id);
         res.status(200).json({ message: "delete success" });
     }

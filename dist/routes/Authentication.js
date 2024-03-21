@@ -27,9 +27,9 @@ router.post("/liff/login", (req, res) => __awaiter(void 0, void 0, void 0, funct
         const newUser = yield (0, prisma_query_1.createUser)({
             line_id: uid,
             firstname: profile.displayName,
-            lastname: "",
-            email: "",
-            phone: "",
+            // lastname: "",
+            // email: "",
+            // phone: "",
             image: profile.pictureUrl,
         });
         const accessToken = yield (0, token_manager_1.generateAccessTokenLine)({ id: newUser.u_id });

@@ -107,10 +107,21 @@ const banUser = async (u_id: string) => {
   });
 };
 
+const activeUser = async (u_id: string) => {
+  return await prisma.users.update({
+    data: {
+      status: "ACTIVE",
+    },
+    where: {
+      u_id: u_id,
+    },
+  });
+};
+
 const getAllUserWithFilter = async (
   page: number,
   pageSize: number,
-  filter: any = null,
+  filter: any = null
 ) => {
   const skip = (page - 1) * pageSize;
   const data = await prisma.users.findMany({
@@ -118,7 +129,7 @@ const getAllUserWithFilter = async (
     take: pageSize,
     where: {
       ...filter,
-    }
+    },
   });
 
   const total = await prisma.users.count({
@@ -128,6 +139,38 @@ const getAllUserWithFilter = async (
   });
 
   return { data, total };
+};
+
+const updateUser = async (data: any, u_id: string) => {
+  if (data.email) {
+    const checkEmail = await prisma.users.findMany({
+      where: {
+        email: data.email,
+      },
+    });
+    if (checkEmail.length != 0) {
+      return "email is taken";
+    }
+  }
+  if (data.phone) {
+    const checkPhone = await prisma.users.findMany({
+      where: {
+        phone: data.phone,
+      },
+    });
+    if (checkPhone.length != 0) {
+      return "phone is taken";
+    }
+  }
+  const user = await prisma.users.update({
+    where: {
+      u_id: u_id,
+    },
+    data: {
+      ...data,
+    },
+  });
+  return user; // คืนค่า user หลังจากที่อัปเดตข้อมูลเสร็จสมบูรณ์
 };
 
 export {
@@ -143,4 +186,6 @@ export {
   deleteUser,
   banUser,
   getAllUserWithFilter,
+  activeUser,
+  updateUser,
 };

@@ -24,14 +24,13 @@ router.post("/liff/login", async (req, res) => {
   const profile = req.body.lineProfile;
   const uid = profile.userId;
   const user = await verifyLogin({ line_id: uid });
-
   if (user.length == 0) {
     const newUser = await createUser({
       line_id: uid,
       firstname: profile.displayName,
-      lastname: "",
-      email: "",
-      phone: "",
+      // lastname: "",
+      // email: "",
+      // phone: "",
       image: profile.pictureUrl,
     });
 

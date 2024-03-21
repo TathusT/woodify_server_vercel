@@ -103,6 +103,8 @@ async function updateWoodImage(paths: any, id: string) {
   await prisma.wood_Image.createMany({
     data: query,
   });
+
+  return true;
 }
 
 async function deleteImageWood(w_id: string, deleteImage: any = null) {

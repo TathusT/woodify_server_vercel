@@ -1,4 +1,6 @@
-const notLoginLine = 'richmenu-a1dc50158b2c2b9db6858fc5e3c32ce5'
-const loginLine = 'richmenu-8154dde3f938d35f0977418141d5f35c'
+const notLoginLine = 'richmenu-ee2ee7d07c61fa482de94fbe6b6497b4'
+const loginLine = 'richmenu-9b02ffb13fd2a81bf9889f6aa23460da'
+const banUserLine = 'richmenu-74a4d61439c9c29856e038538db41245'
+const deleteUserLine = 'richmenu-dcb5b309d74bee6b7bc6d497cb799492'
 
-export {notLoginLine, loginLine}
+export {notLoginLine, loginLine, banUserLine, deleteUserLine}  

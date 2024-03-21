@@ -12,9 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSelectResult = exports.updateStatusVerify = exports.getClassifyAllFilter = exports.getClassifyAllWithUserId = exports.getClassifyStatusByUserIdDonutChart = exports.getClassifyByUserIdDonutChart = exports.getClassifyWithWaitForVerifyWithUserId = exports.getClassifyWithDayWithUserId = exports.getPieChartStatusData = exports.getClassifyAll = exports.getClassifyWithVerify = exports.getClassifyToday = exports.updateClassify = exports.createClassifyDB = exports.getClassifyById = exports.getClassifyWithWaitForVerify = exports.getClassifyWithAll = exports.getClassifyWithDay = exports.getClassifyWithDate = exports.getClassifyCountByWood = void 0;
+exports.deleteClassify = exports.updateSelectResult = exports.updateStatusVerify = exports.getClassifyAllFilter = exports.getClassifyAllWithUserId = exports.getClassifyStatusByUserIdDonutChart = exports.getClassifyByUserIdDonutChart = exports.getClassifyWithWaitForVerifyWithUserId = exports.getClassifyWithDayWithUserId = exports.getPieChartStatusData = exports.getClassifyAll = exports.getClassifyWithVerify = exports.getClassifyToday = exports.updateClassify = exports.createClassifyDB = exports.getClassifyById = exports.getClassifyWithWaitForVerify = exports.getClassifyWithAll = exports.getClassifyWithDay = exports.getClassifyWithDate = exports.getClassifyCountByWood = void 0;
 const prisma_1 = require("./prisma");
-const prisma_query_note_1 = require("./prisma_query_note");
 const prisma_query_user_1 = require("./prisma_query_user");
 const cuid_1 = __importDefault(require("cuid"));
 function getClassifyCountByWood(filter = null) {
@@ -122,7 +121,7 @@ const getClassifyAllWithUserId = (page, pageSize, uid, filter = null) => __await
         },
     });
     const total = yield prisma_1.prisma.classify.count({
-        where: Object.assign({}, filter),
+        where: Object.assign({ create_by: uid }, filter),
     });
     return { data, total };
 });
@@ -298,9 +297,6 @@ const updateStatusVerify = (cid, uid, status, description) => __awaiter(void 0, 
             status_verify: status,
         },
     });
-    if (classify) {
-        yield (0, prisma_query_note_1.addNote)(description, cid, uid);
-    }
 });
 exports.updateStatusVerify = updateStatusVerify;
 const updateSelectResult = (cid, uid, result) => __awaiter(void 0, void 0, void 0, function* () {
@@ -315,4 +311,15 @@ const updateSelectResult = (cid, uid, result) => __awaiter(void 0, void 0, void 
     });
 });
 exports.updateSelectResult = updateSelectResult;
+const deleteClassify = (cid) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.prisma.classify.update({
+        where: {
+            c_id: cid,
+        },
+        data: {
+            status: false
+        },
+    });
+});
+exports.deleteClassify = deleteClassify;
 //# sourceMappingURL=prisma_query_classify.js.map

@@ -19,7 +19,8 @@ import {
   getClassifyAllWithUserId,
   getClassifyAllFilter,
   updateStatusVerify,
-  updateSelectResult
+  updateSelectResult,
+  deleteClassify
 } from "../global/prisma_query_classify";
 import { decryptAccessToken } from "../global/token_manager";
 require("dotenv").config();
@@ -210,6 +211,13 @@ router.put('/update_select_result',async (req, res) => {
   const result = data.result;
   const classify = updateSelectResult(c_id, u_id, result)
   res.status(200).json({message : "update success", data : classify})
+})
+
+router.post('/delete_classify',async (req, res) => {
+  const data = req.body
+  const c_id = data.c_id
+  await deleteClassify(c_id)
+  res.status(200).json({message : "delete success"})
 })
 
 

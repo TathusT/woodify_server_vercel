@@ -5,7 +5,7 @@ import { getWoodInfo, getWoodInfoOne, updateWoodInfoNoImage, deleteWoodInfo, upd
 import { decryptAccessToken } from "../global/token_manager";
 import multer from "multer";
 import path from "path";
-import fs from "fs";
+import fs, { stat } from "fs";
 require('dotenv').config();
 
 const router: Router = express.Router();
@@ -97,12 +97,14 @@ router.put('/wood_image', upload.array("files"), async (req, res) => {
     const w_id = req.body.id
     const uploadedFilenames = (req.files as Express.Multer.File[]).map(file => file.filename);
     let status = await updateWoodImage(uploadedFilenames, w_id);
+    console.log(status);
+    
     return status;
   }
   catch(error){
     res.status(500).json({ error: 'Internal Server Error' });
   }
-})
+}) 
 
 router.post('/image_wood_delete', async (req, res) =>{
   try {
@@ -122,8 +124,6 @@ router.delete('/wood_delete', async (req, res) =>{
     const token = data.token;
     const w_id = data.w_id
     const u_id = await decryptAccessToken(token);
-    console.log(w_id, token);
-    
     await deleteWoodInfo(w_id, u_id.id)
     res.status(200).json({ message: "delete success" });
   } catch (error) {

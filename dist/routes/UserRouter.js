@@ -156,6 +156,9 @@ router.post("/delete_user", (req, res) => __awaiter(void 0, void 0, void 0, func
     try {
         const data = req.body;
         const user = yield (0, prisma_query_user_1.deleteUser)(data.u_id);
+        if (user.status == 'DELETE') {
+            yield (0, richmenu_1.deleteUserRichMenu)(user.line_id);
+        }
         res.status(200).json({ message: "delete success" });
     }
     catch (error) {
@@ -166,7 +169,23 @@ router.post("/ban_user", (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const data = req.body;
         const user = yield (0, prisma_query_user_1.banUser)(data.u_id);
+        if (user.status == 'BAN') {
+            yield (0, richmenu_1.banUserRichMenu)(user.line_id);
+        }
         res.status(200).json({ message: "ban success" });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.post("/active_user", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const user = yield (0, prisma_query_user_1.activeUser)(data.u_id);
+        if (user.status == 'ACTIVE') {
+            yield (0, richmenu_1.activeUserRichMenu)(user.line_id);
+        }
+        res.status(200).json({ message: "active success" });
     }
     catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
@@ -180,6 +199,17 @@ router.post("/all_users_filter", (req, res) => __awaiter(void 0, void 0, void 0,
         const filter = data.filter;
         const manual = yield (0, prisma_query_user_1.getAllUserWithFilter)(parseInt(currentPage), parseInt(pageSize), filter);
         res.status(200).json(manual);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.post("/update_profile", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const user = yield (0, prisma_query_user_1.updateUser)(data.data, data.u_id);
+        console.log(user);
+        res.status(200).json(user);
     }
     catch (error) {
         res.status(500).json({ error: "Internal Server Error" });

@@ -42,7 +42,7 @@ enum roleEnum {
   USER
   EXPERT
   ADMIN
-}
+} 
 
 model Wood_info {
   w_id                     String @id @default(uuid())

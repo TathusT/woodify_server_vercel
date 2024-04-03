@@ -155,7 +155,7 @@ const createWoodCarousel = (uid, event) => __awaiter(void 0, void 0, void 0, fun
             type: "bubble",
             hero: {
                 type: "image",
-                url: `/image/icon/more_wood.png`,
+                url: `https://vkcwt8l2-4000.asse.devtunnels.ms/image/icon/more_wood.png`,
                 size: "full",
                 aspectRatio: "20:13",
                 aspectMode: "cover",
@@ -249,8 +249,8 @@ const createManualCarousel = (uid, event) => __awaiter(void 0, void 0, void 0, f
     let max = 11;
     const dataManual = yield prisma_1.prisma.manual.findMany({
         where: {
-            status: true
-        }
+            status: true,
+        },
     });
     if (dataManual.length == 0 || dataManual == null) {
         return client.replyMessage(event.replyToken, {
@@ -321,7 +321,7 @@ const createManualCarousel = (uid, event) => __awaiter(void 0, void 0, void 0, f
             type: "bubble",
             hero: {
                 type: "image",
-                url: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ4IuDW4CkzB5rwYtOm_YuCZmnDVPdi8IZMQ&usqp=CAU`,
+                url: `https://vkcwt8l2-4000.asse.devtunnels.ms/image/icon/more_manual.png`,
                 size: "full",
                 aspectRatio: "20:13",
                 aspectMode: "cover",
@@ -559,14 +559,28 @@ const lineEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
         let message = event.message.text;
         const image = event.message.type == "image";
         const userState = userStates[uid];
-        console.log((message != 'ข้อมูลพันธุ์ไม้' || message != 'คู่มือ'));
-        if ((!userState || userState !== "waiting_for_check") && (message != 'ข้อมูลพันธุ์ไม้' && message != 'คู่มือ')) {
+        console.log(message != "ข้อมูลพันธุ์ไม้" || message != "คู่มือ");
+        if ((!userState || userState !== "waiting_for_check") &&
+            message != "ข้อมูลพันธุ์ไม้" &&
+            message != "คู่มือ") {
             if (message == "ตรวจสอบพันธุ์ไม้") {
                 userStates[uid] = "waiting_for_check";
-                return client.replyMessage(event.replyToken, {
+                const message_classify = {
                     type: "text",
                     text: "กรุณาอัปโหลดรูปหรือถ่ายภาพเพื่อใช้ในการตรวจสอบ",
-                });
+                    quickReply: {
+                        items: [
+                            {
+                                type: "action",
+                                action: {
+                                    type: "camera",
+                                    label: "Open Camera",
+                                },
+                            },
+                        ],
+                    },
+                };
+                return client.replyMessage(event.replyToken, message_classify);
             }
             return client.replyMessage(event.replyToken, {
                 type: "text",

@@ -12,13 +12,13 @@ import { createClassifyDB } from "../global/prisma_query_classify";
 const router: Router = express.Router();
 
 const client = new line.Client(lineConfig);
-const userStates:any = {};
+const userStates: any = {};
 
 router.post("/webhook", async (req, res) => {
   try {
     const events = req.body.events;
     // console.log(events);
-    
+
     lineEvent(events[0]);
     res.status(200).send("OK");
   } catch (err) {
@@ -26,7 +26,7 @@ router.post("/webhook", async (req, res) => {
   }
 });
 
-const createWoodCarousel = async (uid: string, event : any) => {
+const createWoodCarousel = async (uid: string, event: any) => {
   const objectBubble: any = [];
   const dataWood = await getWoodInfoLine();
   const max = 11;
@@ -34,7 +34,7 @@ const createWoodCarousel = async (uid: string, event : any) => {
   let urlRequest;
   let sliceWood;
 
-  if(dataWood.length == 0 || dataWood == null){
+  if (dataWood.length == 0 || dataWood == null) {
     return client.replyMessage(event.replyToken, {
       type: "text",
       text: "ขณะนี้ยังไม่มีข้อมูลไม้",
@@ -44,9 +44,8 @@ const createWoodCarousel = async (uid: string, event : any) => {
   if (dataWood.length > max) {
     sliceWood = dataWood.slice(0, max);
     more = true;
-  }
-  else{
-    sliceWood = dataWood
+  } else {
+    sliceWood = dataWood;
   }
 
   sliceWood.forEach((wood) => {
@@ -128,7 +127,7 @@ const createWoodCarousel = async (uid: string, event : any) => {
       type: "bubble",
       hero: {
         type: "image",
-        url: `/image/icon/more_wood.png`,
+        url: `https://vkcwt8l2-4000.asse.devtunnels.ms/image/icon/more_wood.png`,
         size: "full",
         aspectRatio: "20:13",
         aspectMode: "cover",
@@ -191,7 +190,7 @@ const createWoodCarousel = async (uid: string, event : any) => {
         flex: 0,
       },
     });
-  } 
+  }
 
   urlRequest = `https://api.line.me/v2/bot/message/push`;
   await axios.request({
@@ -217,18 +216,18 @@ const createWoodCarousel = async (uid: string, event : any) => {
   });
 };
 
-const createManualCarousel = async (uid: string, event : any) => {
+const createManualCarousel = async (uid: string, event: any) => {
   let objectBubble: any = [];
   let sliceManual;
   let more = false;
   let max = 11;
   const dataManual = await prisma.manual.findMany({
-    where : {
-      status : true
-    }
+    where: {
+      status: true,
+    },
   });
 
-  if(dataManual.length == 0 || dataManual == null){
+  if (dataManual.length == 0 || dataManual == null) {
     return client.replyMessage(event.replyToken, {
       type: "text",
       text: "ขณะนี้ยังไม่มีข้อมูลคู่มือ",
@@ -237,9 +236,8 @@ const createManualCarousel = async (uid: string, event : any) => {
 
   if (dataManual.length > max) {
     sliceManual = dataManual.slice(0, max);
-  }
-  else{
-    sliceManual = dataManual
+  } else {
+    sliceManual = dataManual;
   }
   sliceManual.forEach((manual) => {
     objectBubble.push({
@@ -299,7 +297,7 @@ const createManualCarousel = async (uid: string, event : any) => {
       type: "bubble",
       hero: {
         type: "image",
-        url: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ4IuDW4CkzB5rwYtOm_YuCZmnDVPdi8IZMQ&usqp=CAU`,
+        url: `https://vkcwt8l2-4000.asse.devtunnels.ms/image/icon/more_manual.png`,
         size: "full",
         aspectRatio: "20:13",
         aspectMode: "cover",
@@ -496,7 +494,7 @@ const createClassify = async (uid: string, event: any) => {
                               weight: "bold",
                               size: "xl",
                               align: "start",
-                              margin: "xs", 
+                              margin: "xs",
                             },
                             {
                               type: "image",
@@ -504,7 +502,7 @@ const createClassify = async (uid: string, event: any) => {
                               size: "xxs",
                               aspectRatio: "1:1",
                               align: "start",
-                              margin: "xs", 
+                              margin: "xs",
                             },
                           ],
                         },
@@ -551,15 +549,31 @@ const lineEvent = async (event: any) => {
     let message = event.message.text;
     const image = event.message.type == "image";
     const userState = userStates[uid];
-    console.log((message != 'ข้อมูลพันธุ์ไม้' || message != 'คู่มือ'));
-    
-    if ((!userState || userState !== "waiting_for_check") && (message != 'ข้อมูลพันธุ์ไม้' && message != 'คู่มือ')) {
+    console.log(message != "ข้อมูลพันธุ์ไม้" || message != "คู่มือ");
+
+    if (
+      (!userState || userState !== "waiting_for_check") &&
+      message != "ข้อมูลพันธุ์ไม้" &&
+      message != "คู่มือ"
+    ) {
       if (message == "ตรวจสอบพันธุ์ไม้") {
         userStates[uid] = "waiting_for_check";
-        return client.replyMessage(event.replyToken, {
+        const message_classify: any = {
           type: "text",
           text: "กรุณาอัปโหลดรูปหรือถ่ายภาพเพื่อใช้ในการตรวจสอบ",
-        });
+          quickReply: {
+            items: [
+              {
+                type: "action",
+                action: {
+                  type: "camera",
+                  label: "Open Camera",
+                },
+              },
+            ],
+          },
+        };
+        return client.replyMessage(event.replyToken, message_classify);
       }
       return client.replyMessage(event.replyToken, {
         type: "text",

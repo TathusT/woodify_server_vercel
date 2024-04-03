@@ -46,6 +46,8 @@ router.post('/user_with_token', async (req, res) => {
     const u_id = await decryptAccessToken(token);
     const user =  await getUserFromUserId(u_id.id);
     res.status(200).json(user);
+    console.log(user);
+    
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }

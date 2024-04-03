@@ -56,6 +56,7 @@ router.post('/user_with_token', (req, res) => __awaiter(void 0, void 0, void 0, 
         const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
         const user = yield (0, prisma_query_user_1.getUserFromUserId)(u_id.id);
         res.status(200).json(user);
+        console.log(user);
     }
     catch (error) {
         res.status(500).json({ error: "Internal Server Error" });

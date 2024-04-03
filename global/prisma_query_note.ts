@@ -39,7 +39,7 @@ const addNote = async (description: string, c_id: string, u_id: string) => {
     include: {
       creator: true,
     },
-  });
+  }); 
 
   // ดึงข้อมูลล่าสุดที่เพิ่มเข้าไป
   const fullNote = await prisma.note.findFirst({

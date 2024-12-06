@@ -127,7 +127,7 @@ const createWoodCarousel = async (uid: string, event: any) => {
       type: "bubble",
       hero: {
         type: "image",
-        url: `https://vkcwt8l2-4000.asse.devtunnels.ms/image/icon/more_wood.png`,
+        url: `${process.env.PATH_BACKEND}/image/icon/more_wood.png`,
         size: "full",
         aspectRatio: "20:13",
         aspectMode: "cover",
@@ -297,7 +297,7 @@ const createManualCarousel = async (uid: string, event: any) => {
       type: "bubble",
       hero: {
         type: "image",
-        url: `https://vkcwt8l2-4000.asse.devtunnels.ms/image/icon/more_manual.png`,
+        url: `${process.env.PATH_BACKEND}/image/icon/more_manual.png`,
         size: "full",
         aspectRatio: "20:13",
         aspectMode: "cover",

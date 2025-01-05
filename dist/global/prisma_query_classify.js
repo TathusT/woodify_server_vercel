@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteClassify = exports.updateSelectResult = exports.updateStatusVerify = exports.getClassifyAllFilter = exports.getClassifyAllWithUserId = exports.getClassifyStatusByUserIdDonutChart = exports.getClassifyByUserIdDonutChart = exports.getClassifyWithWaitForVerifyWithUserId = exports.getClassifyWithDayWithUserId = exports.getPieChartStatusData = exports.getClassifyAll = exports.getClassifyWithVerify = exports.getClassifyToday = exports.updateClassify = exports.createClassifyDB = exports.getClassifyById = exports.getClassifyWithWaitForVerify = exports.getClassifyWithAll = exports.getClassifyWithDay = exports.getClassifyWithDate = exports.getClassifyCountByWood = void 0;
+const defaultValues_1 = require("../constants/defaultValues");
 const prisma_1 = require("./prisma");
 const prisma_query_user_1 = require("./prisma_query_user");
 const cuid_1 = __importDefault(require("cuid"));
@@ -33,20 +34,6 @@ function getClassifyCountByWood(filter = null) {
 }
 exports.getClassifyCountByWood = getClassifyCountByWood;
 const getClassifyWithDate = (filter = null) => __awaiter(void 0, void 0, void 0, function* () {
-    const months = [
-        { short: "ม.ค", full: "มกราคม" },
-        { short: "ก.พ", full: "กุมภาพันธ์" },
-        { short: "มี.ค", full: "มีนาคม" },
-        { short: "เม.ย", full: "เมษายน" },
-        { short: "พ.ค", full: "พฤษภาคม" },
-        { short: "มิ.ย", full: "มิถุนายน" },
-        { short: "ก.ค", full: "กรกฎาคม" },
-        { short: "ส.ค", full: "สิงหาคม" },
-        { short: "ก.ย", full: "กันยายน" },
-        { short: "ต.ค", full: "ตุลาคม" },
-        { short: "พ.ย", full: "พฤศจิกายน" },
-        { short: "ธ.ค", full: "ธันวาคม" },
-    ];
     const classifyData = yield prisma_1.prisma.classify.findMany({
         where: Object.assign({}, filter),
     });
@@ -54,8 +41,8 @@ const getClassifyWithDate = (filter = null) => __awaiter(void 0, void 0, void 0,
     classifyData.forEach((entry) => {
         const createAtDate = new Date(entry.create_at);
         const month = createAtDate.getMonth();
-        const key = `${entry.select_result}-${month}`;
-        // หากมี key นี้ใน Map แล้ว ให้เพิ่มค่า count
+        const year = createAtDate.getFullYear();
+        const key = `${entry.select_result}-${month}-${year}`;
         if (resultMap.has(key)) {
             resultMap.set(key, resultMap.get(key) + 1);
         }
@@ -65,17 +52,21 @@ const getClassifyWithDate = (filter = null) => __awaiter(void 0, void 0, void 0,
     });
     const resultData = [];
     resultMap.forEach((count, key) => {
-        const [name, month] = key.split("-");
+        const [name, month, year] = key.split("-");
         resultData.push({
             name: name,
-            month: months[parseInt(month)].short,
+            month: `${defaultValues_1.months[parseInt(month)].short} ${(parseInt(year) + 543) % 100}`, // เพิ่มปี
             count: count,
+            year: parseInt(year) + 543
         });
     });
     resultData.sort((a, b) => {
-        const monthOrder = months.findIndex((month) => month.short === a.month) -
-            months.findIndex((month) => month.short === b.month);
-        return monthOrder || a.count - b.count;
+        const yearOrder = a.year - b.year;
+        if (yearOrder !== 0)
+            return yearOrder;
+        const monthOrder = defaultValues_1.months.findIndex((month) => month.short === a.month.split(" ")[0]) -
+            defaultValues_1.months.findIndex((month) => month.short === b.month.split(" ")[0]);
+        return monthOrder;
     });
     return resultData;
 });

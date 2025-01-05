@@ -1,3 +1,4 @@
+import { months } from "../constants/defaultValues";
 import { prisma } from "./prisma";
 import { addNote } from "./prisma_query_note";
 import { getUserFromLineId } from "./prisma_query_user";
@@ -15,7 +16,7 @@ interface CountData {
   count: number;
 }
 
-async function getClassifyCountByWood(filter : any = null) {
+async function getClassifyCountByWood(filter: any = null) {
   const classifyData = await prisma.classify.groupBy({
     by: ["select_result"],
     where: {
@@ -32,35 +33,20 @@ async function getClassifyCountByWood(filter : any = null) {
   }));
 }
 
-const getClassifyWithDate = async (filter : any = null) => {
-  const months = [
-    { short: "ม.ค", full: "มกราคม" },
-    { short: "ก.พ", full: "กุมภาพันธ์" },
-    { short: "มี.ค", full: "มีนาคม" },
-    { short: "เม.ย", full: "เมษายน" },
-    { short: "พ.ค", full: "พฤษภาคม" },
-    { short: "มิ.ย", full: "มิถุนายน" },
-    { short: "ก.ค", full: "กรกฎาคม" },
-    { short: "ส.ค", full: "สิงหาคม" },
-    { short: "ก.ย", full: "กันยายน" },
-    { short: "ต.ค", full: "ตุลาคม" },
-    { short: "พ.ย", full: "พฤศจิกายน" },
-    { short: "ธ.ค", full: "ธันวาคม" },
-  ];
+const getClassifyWithDate = async (filter: any = null) => {
   const classifyData = await prisma.classify.findMany({
     where: {
-      ...filter
+      ...filter,
     },
   });
+
   const resultMap = new Map();
 
   classifyData.forEach((entry) => {
     const createAtDate = new Date(entry.create_at);
     const month = createAtDate.getMonth();
-
-    const key = `${entry.select_result}-${month}`;
-
-    // หากมี key นี้ใน Map แล้ว ให้เพิ่มค่า count
+    const year = createAtDate.getFullYear();
+    const key = `${entry.select_result}-${month}-${year}`;
     if (resultMap.has(key)) {
       resultMap.set(key, resultMap.get(key) + 1);
     } else {
@@ -68,25 +54,27 @@ const getClassifyWithDate = async (filter : any = null) => {
     }
   });
   const resultData: any = [];
-
   resultMap.forEach((count, key) => {
-    const [name, month] = key.split("-");
-
+    const [name, month, year] = key.split("-");
     resultData.push({
       name: name,
-      month: months[parseInt(month)].short,
+      month: `${months[parseInt(month)].short} ${(parseInt(year)+543)%100}`, // เพิ่มปี
       count: count,
+      year: parseInt(year)+543
     });
   });
   resultData.sort((a: any, b: any) => {
+    const yearOrder = a.year - b.year;
+    if (yearOrder !== 0) return yearOrder;
     const monthOrder =
-      months.findIndex((month) => month.short === a.month) -
-      months.findIndex((month) => month.short === b.month);
-    return monthOrder || a.count - b.count;
-  });
+      months.findIndex((month) => month.short === a.month.split(" ")[0]) -
+      months.findIndex((month) => month.short === b.month.split(" ")[0]);
 
+    return monthOrder;
+  });
   return resultData;
 };
+
 
 const getClassifyToday = async (today: any) => {
   today.setHours(0, 0, 0, 0);
@@ -326,8 +314,8 @@ const getClassifyStatusByUserIdDonutChart = async (uid: string) => {
       group.status_verify == "WAITING_FOR_VERIFICATION"
         ? "รอการรับรอง"
         : group.status_verify == "FAILED_CERTIFICATION"
-        ? "ไม่ผ่าน"
-        : "ผ่าน",
+          ? "ไม่ผ่าน"
+          : "ผ่าน",
     amount: group._count._all,
   }));
 };
@@ -367,7 +355,7 @@ const deleteClassify = async (cid: string) => {
       c_id: cid,
     },
     data: {
-      status : false
+      status: false
     },
   });
 };

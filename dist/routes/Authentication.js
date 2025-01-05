@@ -108,7 +108,7 @@ router.post("/line/logout", (req, res) => __awaiter(void 0, void 0, void 0, func
 }));
 router.post("/authentication_user", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const jwtStatus = yield (0, token_manager_1.checkAuthentication)(req);
-    console.log(jwtStatus);
+    // console.log(jwtStatus);
     if (jwtStatus != false) {
         res.send(jwtStatus);
     }

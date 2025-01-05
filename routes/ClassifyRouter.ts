@@ -23,14 +23,15 @@ import {
   deleteClassify
 } from "../global/prisma_query_classify";
 import { decryptAccessToken } from "../global/token_manager";
+import { getUserToday } from "../global/prisma_query_user";
+import checkMiddleware from "../middleware/middleware";
 require("dotenv").config();
 
 const router: Router = express.Router();
 
-router.post("/dashboard_classify_column", async (req, res) => {
+router.post("/dashboard/classify/column", checkMiddleware, async (req, res) => {
   try {
-    const data = req.body;
-    const filter = data.filter
+    let filter = req.body;
     const classify = await getClassifyCountByWood(filter);
     res.status(200).json(classify);
   } catch (error) {
@@ -38,10 +39,9 @@ router.post("/dashboard_classify_column", async (req, res) => {
   }
 });
 
-router.post("/dashboard_classify_line", async (req, res) => {
+router.post("/dashboard/classify/line", async (req, res) => {
   try {
-    const data = req.body;
-    const filter = data.filter
+    const filter = req.body;
     const classify = await getClassifyWithDate(filter);
     res.status(200).json(classify);
   } catch (error) {
@@ -59,6 +59,23 @@ router.get("/get_classiy_today", async (req, res) => {
   }
 });
 
+router.get("/classify/summary", checkMiddleware, async (req, res) => {
+  const today = new Date();
+  try {
+    const classifyCount = await getClassifyToday(today);
+    const classifyAll = await getClassifyWithAll();
+    const classifyWaitForVerify = await getClassifyWithWaitForVerify();
+    const userToday = await getUserToday();
+    res.status(200).json({
+      classifyToday: classifyCount,
+      classifyAll: classifyAll,
+      classifyWaitForVerify: classifyWaitForVerify,
+      userToday: userToday
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 router.get("/get_classiy_status", async (req, res) => {
   try {
@@ -70,17 +87,17 @@ router.get("/get_classiy_status", async (req, res) => {
 });
 
 
-router.get("/classify/:c_id",async (req, res) => {
-    const c_id = req.params.c_id;
-    try {
-      const classify = await getClassifyById(c_id);
-      res.status(200).json(classify);
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+router.get("/classify/:c_id", async (req, res) => {
+  const c_id = req.params.c_id;
+  try {
+    const classify = await getClassifyById(c_id);
+    res.status(200).json(classify);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 })
 
-router.get("/classify/:currentPage/:pageSize",async (req, res) => {
+router.get("/classify/:currentPage/:pageSize", async (req, res) => {
   try {
     const page = req.params.currentPage;
     const pageSize = req.params.pageSize
@@ -91,7 +108,7 @@ router.get("/classify/:currentPage/:pageSize",async (req, res) => {
   }
 })
 
-router.post("/classify",async (req, res) => {
+router.post("/classify", async (req, res) => {
   try {
     const data = req.body
     const page = data.currentPage;
@@ -104,7 +121,7 @@ router.post("/classify",async (req, res) => {
   }
 })
 
-router.get("/classify_user_id/:currentPage/:pageSize/:u_id",async (req, res) => {
+router.get("/classify_user_id/:currentPage/:pageSize/:u_id", async (req, res) => {
   try {
     const page = req.params.currentPage;
     const pageSize = req.params.pageSize
@@ -116,14 +133,14 @@ router.get("/classify_user_id/:currentPage/:pageSize/:u_id",async (req, res) => 
   }
 })
 
-router.post("/classify_user_id",async (req, res) => {
+router.post("/classify_user_id", async (req, res) => {
   try {
     const data = req.body
     const page = data.currentPage;
     const pageSize = data.pageSize
     const uid = data.u_id;
-    console.log(uid);
-    
+    // console.log(uid);
+
     const filter = data.filter;
     const classify = await getClassifyAllWithUserId(parseInt(page), parseInt(pageSize), uid, filter);
     res.status(200).json(classify);
@@ -132,20 +149,20 @@ router.post("/classify_user_id",async (req, res) => {
   }
 })
 
-router.get('/classify_today',async (req, res) => {
-    const data = await getClassifyWithDay();
-    res.status(200).json(data)
+router.get('/classify_today', async (req, res) => {
+  const data = await getClassifyWithDay();
+  res.status(200).json(data)
 })
 
-router.get('/classify_today_with_user_id/:u_id',async (req, res) => {
+router.get('/classify_today_with_user_id/:u_id', async (req, res) => {
   const u_id = req.params.u_id
   const data = await getClassifyWithDayWithUserId(u_id);
   res.status(200).json(data)
 })
 
-router.get('/classify_all',async (req, res) => {
-    const data = await getClassifyWithAll();
-    res.status(200).json(data)
+router.get('/classify_all', async (req, res) => {
+  const data = await getClassifyWithAll();
+  res.status(200).json(data)
 })
 
 router.get('/classify_verify', async (req, res) => {
@@ -155,8 +172,8 @@ router.get('/classify_verify', async (req, res) => {
 
 
 router.get('/classify_wait_for_verify', async (req, res) => {
-    const data = await getClassifyWithWaitForVerify();
-    res.status(200).json(data)
+  const data = await getClassifyWithWaitForVerify();
+  res.status(200).json(data)
 })
 
 router.get('/classify_wait_for_verify/:u_id', async (req, res) => {
@@ -165,7 +182,7 @@ router.get('/classify_wait_for_verify/:u_id', async (req, res) => {
   res.status(200).json(data)
 })
 
-router.put('/classify',async (req, res) => {
+router.put('/classify', async (req, res) => {
   const reqData = req.body
   const c_id = reqData.c_id
   const location = reqData.location
@@ -173,13 +190,13 @@ router.put('/classify',async (req, res) => {
   res.status(200).json(data)
 })
 
-router.get('/classify_donut_with_userid/:u_id',async (req, res) => {
+router.get('/classify_donut_with_userid/:u_id', async (req, res) => {
   const u_id = req.params.u_id
   const data = await getClassifyByUserIdDonutChart(u_id);
   res.status(200).json(data)
 })
 
-router.post('/classify_donut_with_userid_query',async (req, res) => {
+router.post('/classify_donut_with_userid_query', async (req, res) => {
   const data = req.body
   const u_id = data.u_id
   const filter = data.filter
@@ -187,37 +204,37 @@ router.post('/classify_donut_with_userid_query',async (req, res) => {
   res.status(200).json(wood)
 })
 
-router.get('/classify_status_donut_with_userid/:u_id',async (req, res) => {
+router.get('/classify_status_donut_with_userid/:u_id', async (req, res) => {
   const u_id = req.params.u_id
   const data = await getClassifyStatusByUserIdDonutChart(u_id);
   res.status(200).json(data)
 })
 
-router.post('/verify_status_classify',async (req, res) => {
+router.post('/verify_status_classify', async (req, res) => {
   const data = req.body
   const u_id = data.u_id
   const c_id = data.c_id
   const description = data.description;
   const status = data.status
   const classify = updateStatusVerify(c_id, u_id, status, description)
-  res.status(200).json({message : "verify success", data : classify})
+  res.status(200).json({ message: "verify success", data: classify })
 })
 
-router.put('/update_select_result',async (req, res) => {
+router.put('/update_select_result', async (req, res) => {
   const data = req.body
   const u_id = data.u_id
   const c_id = data.c_id
-  
+
   const result = data.result;
   const classify = updateSelectResult(c_id, u_id, result)
-  res.status(200).json({message : "update success", data : classify})
+  res.status(200).json({ message: "update success", data: classify })
 })
 
-router.post('/delete_classify',async (req, res) => {
+router.post('/delete_classify', async (req, res) => {
   const data = req.body
   const c_id = data.c_id
   await deleteClassify(c_id)
-  res.status(200).json({message : "delete success"})
+  res.status(200).json({ message: "delete success" })
 })
 
 

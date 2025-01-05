@@ -33,7 +33,7 @@ router.get("/user/:u_id", (req, res) => __awaiter(void 0, void 0, void 0, functi
 router.get("/user", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield (0, prisma_query_user_1.getAllUser)();
-        console.log(users);
+        // console.log(users);
         res.status(200).json(users);
     }
     catch (error) {
@@ -56,7 +56,7 @@ router.post('/user_with_token', (req, res) => __awaiter(void 0, void 0, void 0, 
         const u_id = yield (0, token_manager_1.decryptAccessToken)(token);
         const user = yield (0, prisma_query_user_1.getUserFromUserId)(u_id.id);
         res.status(200).json(user);
-        console.log(user);
+        // console.log(user);
     }
     catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
@@ -209,7 +209,7 @@ router.post("/update_profile", (req, res) => __awaiter(void 0, void 0, void 0, f
     try {
         const data = req.body;
         const user = yield (0, prisma_query_user_1.updateUser)(data.data, data.u_id);
-        console.log(user);
+        // console.log(user);
         res.status(200).json(user);
     }
     catch (error) {

@@ -14,12 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const prisma_query_classify_1 = require("../global/prisma_query_classify");
+const prisma_query_user_1 = require("../global/prisma_query_user");
+const middleware_1 = __importDefault(require("../middleware/middleware"));
 require("dotenv").config();
 const router = express_1.default.Router();
-router.post("/dashboard_classify_column", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/dashboard/classify/column", middleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = req.body;
-        const filter = data.filter;
+        let filter = req.body;
         const classify = yield (0, prisma_query_classify_1.getClassifyCountByWood)(filter);
         res.status(200).json(classify);
     }
@@ -27,10 +28,9 @@ router.post("/dashboard_classify_column", (req, res) => __awaiter(void 0, void 0
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
-router.post("/dashboard_classify_line", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/dashboard/classify/line", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = req.body;
-        const filter = data.filter;
+        const filter = req.body;
         const classify = yield (0, prisma_query_classify_1.getClassifyWithDate)(filter);
         res.status(200).json(classify);
     }
@@ -43,6 +43,24 @@ router.get("/get_classiy_today", (req, res) => __awaiter(void 0, void 0, void 0,
     try {
         const classifyCount = yield (0, prisma_query_classify_1.getClassifyToday)(today);
         res.status(200).json(classifyCount);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.get("/classify/summary", middleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const today = new Date();
+    try {
+        const classifyCount = yield (0, prisma_query_classify_1.getClassifyToday)(today);
+        const classifyAll = yield (0, prisma_query_classify_1.getClassifyWithAll)();
+        const classifyWaitForVerify = yield (0, prisma_query_classify_1.getClassifyWithWaitForVerify)();
+        const userToday = yield (0, prisma_query_user_1.getUserToday)();
+        res.status(200).json({
+            classifyToday: classifyCount,
+            classifyAll: classifyAll,
+            classifyWaitForVerify: classifyWaitForVerify,
+            userToday: userToday
+        });
     }
     catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
@@ -109,7 +127,7 @@ router.post("/classify_user_id", (req, res) => __awaiter(void 0, void 0, void 0,
         const page = data.currentPage;
         const pageSize = data.pageSize;
         const uid = data.u_id;
-        console.log(uid);
+        // console.log(uid);
         const filter = data.filter;
         const classify = yield (0, prisma_query_classify_1.getClassifyAllWithUserId)(parseInt(page), parseInt(pageSize), uid, filter);
         res.status(200).json(classify);

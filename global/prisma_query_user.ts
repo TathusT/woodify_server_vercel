@@ -173,6 +173,18 @@ const updateUser = async (data: any, u_id: string) => {
   return user; // คืนค่า user หลังจากที่อัปเดตข้อมูลเสร็จสมบูรณ์
 };
 
+const updateUserImage = async (u_id: string, image: string) => {
+  const user = await prisma.users.update({
+    where: {
+      u_id: u_id,
+    },
+    data: {
+      image: image,
+    },
+  });
+  return user; // คืนค่า user หลังจากที่อัปเดตข้อมูลเสร็จสมบูรณ์
+};
+
 export {
   getUserFromLineId,
   getUserFromUserId,
@@ -188,4 +200,5 @@ export {
   getAllUserWithFilter,
   activeUser,
   updateUser,
+  updateUserImage
 };

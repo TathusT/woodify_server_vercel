@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.activeUser = exports.getAllUserWithFilter = exports.banUser = exports.deleteUser = exports.createExpert = exports.setUserData = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
+exports.updateUserImage = exports.updateUser = exports.activeUser = exports.getAllUserWithFilter = exports.banUser = exports.deleteUser = exports.createExpert = exports.setUserData = exports.getCountExpert = exports.getUserWithEmail = exports.getUserToday = exports.updateRoleFromId = exports.getAllUser = exports.getUserFromUserId = exports.getUserFromLineId = void 0;
 const prisma_1 = require("./prisma");
 const getUserFromLineId = (lineid) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.users.findFirst({
@@ -172,4 +172,16 @@ const updateUser = (data, u_id) => __awaiter(void 0, void 0, void 0, function* (
     return user; // คืนค่า user หลังจากที่อัปเดตข้อมูลเสร็จสมบูรณ์
 });
 exports.updateUser = updateUser;
+const updateUserImage = (u_id, image) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield prisma_1.prisma.users.update({
+        where: {
+            u_id: u_id,
+        },
+        data: {
+            image: image,
+        },
+    });
+    return user; // คืนค่า user หลังจากที่อัปเดตข้อมูลเสร็จสมบูรณ์
+});
+exports.updateUserImage = updateUserImage;
 //# sourceMappingURL=prisma_query_user.js.map

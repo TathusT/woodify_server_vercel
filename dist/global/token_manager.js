@@ -13,7 +13,7 @@ exports.generateAccessTokenLine = exports.decryptAccessToken = exports.checkAuth
 const jwt = require("jsonwebtoken");
 function generateAccessToken(payload) {
     return __awaiter(this, void 0, void 0, function* () {
-        return jwt.sign(payload, process.env.ACCESS_TOKEN, { expiresIn: "1d" });
+        return jwt.sign(payload, process.env.ACCESS_TOKEN, { expiresIn: "365d" });
     });
 }
 exports.generateAccessToken = generateAccessToken;

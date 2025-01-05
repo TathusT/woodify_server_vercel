@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
     socket.leave(sessionId);
     console.log("disconnect already");
   });
-});
+}); 
 
 httpServer.listen(4000, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

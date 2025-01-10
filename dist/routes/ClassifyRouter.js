@@ -20,7 +20,18 @@ require("dotenv").config();
 const router = express_1.default.Router();
 router.post("/dashboard/classify/column", middleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let filter = req.body;
+        const filterBody = req.body;
+        let filter = {};
+        if (filterBody.dateTo != '') {
+            filter['create_at'] = filter['create_at'] || {};
+            const dateToISO = new Date(filterBody.dateTo + 'T16:59:59.999Z');
+            dateToISO.setDate(dateToISO.getDate());
+            filter['create_at']['lte'] = dateToISO;
+        }
+        if (filterBody.dateFrom != '') {
+            filter['create_at'] = filter['create_at'] || {};
+            filter['create_at']['gte'] = new Date(filterBody.dateFrom.replace(/-/g, '/'));
+        }
         const classify = yield (0, prisma_query_classify_1.getClassifyCountByWood)(filter);
         res.status(200).json(classify);
     }
@@ -28,9 +39,20 @@ router.post("/dashboard/classify/column", middleware_1.default, (req, res) => __
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));
-router.post("/dashboard/classify/line", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/dashboard/classify/line", middleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const filter = req.body;
+        const filterBody = req.body;
+        let filter = {};
+        if (filterBody.dateTo != '') {
+            filter['create_at'] = filter['create_at'] || {};
+            const dateToISO = new Date(filterBody.dateTo + 'T16:59:59.999Z');
+            dateToISO.setDate(dateToISO.getDate());
+            filter['create_at']['lte'] = dateToISO;
+        }
+        if (filterBody.dateFrom != '') {
+            filter['create_at'] = filter['create_at'] || {};
+            filter['create_at']['gte'] = new Date(filterBody.dateFrom.replace(/-/g, '/'));
+        }
         const classify = yield (0, prisma_query_classify_1.getClassifyWithDate)(filter);
         res.status(200).json(classify);
     }

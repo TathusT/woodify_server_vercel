@@ -31,7 +31,18 @@ const router: Router = express.Router();
 
 router.post("/dashboard/classify/column", checkMiddleware, async (req, res) => {
   try {
-    let filter = req.body;
+    const filterBody = req.body;
+    let filter: Record<string, any> = {};
+    if (filterBody.dateTo != '') {
+      filter['create_at'] = filter['create_at'] || {};
+      const dateToISO = new Date(filterBody.dateTo + 'T16:59:59.999Z');
+      dateToISO.setDate(dateToISO.getDate());
+      filter['create_at']['lte'] = dateToISO;
+    }
+    if (filterBody.dateFrom != '') {
+      filter['create_at'] = filter['create_at'] || {};
+      filter['create_at']['gte'] = new Date(filterBody.dateFrom.replace(/-/g, '/'));
+    }
     const classify = await getClassifyCountByWood(filter);
     res.status(200).json(classify);
   } catch (error) {
@@ -39,9 +50,21 @@ router.post("/dashboard/classify/column", checkMiddleware, async (req, res) => {
   }
 });
 
-router.post("/dashboard/classify/line", async (req, res) => {
+router.post("/dashboard/classify/line",checkMiddleware, async (req, res) => {
   try {
-    const filter = req.body;
+    const filterBody = req.body;
+    let filter: Record<string, any> = {};
+    if (filterBody.dateTo != '') {
+      filter['create_at'] = filter['create_at'] || {};
+      const dateToISO = new Date(filterBody.dateTo + 'T16:59:59.999Z');
+      dateToISO.setDate(dateToISO.getDate());
+      filter['create_at']['lte'] = dateToISO;
+    }
+
+    if (filterBody.dateFrom != '') {
+      filter['create_at'] = filter['create_at'] || {};
+      filter['create_at']['gte'] = new Date(filterBody.dateFrom.replace(/-/g, '/'));
+    }
     const classify = await getClassifyWithDate(filter);
     res.status(200).json(classify);
   } catch (error) {

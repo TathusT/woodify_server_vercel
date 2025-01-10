@@ -46,8 +46,6 @@ router.post('/user_with_token', async (req, res) => {
     const u_id = await decryptAccessToken(token);
     const user =  await getUserFromUserId(u_id.id);
     res.status(200).json(user);
-    console.log(user);
-    
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -208,8 +206,6 @@ router.post("/update_profile", async (req, res) => {
   try {
     const data = req.body;
     const user = await updateUser(data.data, data.u_id)
-    console.log(user);
-    
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });

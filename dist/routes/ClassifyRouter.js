@@ -109,8 +109,18 @@ router.post("/classify_user_id", (req, res) => __awaiter(void 0, void 0, void 0,
         const page = data.currentPage;
         const pageSize = data.pageSize;
         const uid = data.u_id;
-        console.log(uid);
-        const filter = data.filter;
+        let filter = data.filter;
+        if (filter.date.dateTo != '') {
+            filter['create_at'] = filter['create_at'] || {};
+            const dateToISO = new Date(filter.date.dateTo + 'T16:59:59.999Z');
+            dateToISO.setDate(dateToISO.getDate());
+            filter['create_at']['lte'] = dateToISO;
+        }
+        if (filter.date.dateFrom != '') {
+            filter['create_at'] = filter['create_at'] || {};
+            filter['create_at']['gte'] = new Date(filter.date.dateFrom.replace(/-/g, '/'));
+        }
+        delete filter.date;
         const classify = yield (0, prisma_query_classify_1.getClassifyAllWithUserId)(parseInt(page), parseInt(pageSize), uid, filter);
         res.status(200).json(classify);
     }
